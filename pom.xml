@@ -34,6 +34,12 @@
             <artifactId>spring-context</artifactId>
             <version>4.0.0.RELEASE</version>
         </dependency>
+        <dependency>
+            <groupId>io.netty</groupId>
+            <artifactId>netty-all</artifactId>
+            <version>4.0.15.Final</version>
+            <scope>compile</scope>
+        </dependency>
     </dependencies>
 
     <build>
@@ -51,7 +57,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.monopoly.Server</mainClass>
+                            <mainClass>com.monopoly.Application</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

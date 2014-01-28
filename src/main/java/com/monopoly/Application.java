@@ -12,8 +12,19 @@ public class Application implements IApplication {
 
     private final static Logger log = LoggerFactory.getLogger(Application.class);
 
-    public void start() {
+    private Application() {
+    }
+
+    public static void main(String[] args) {
         log.info("Application is starting...");
+        IApplication app = new Application();
+        app.start();
+        log.info("Application started");
+    }
+
+    @Override
+    public void start() {
+
     }
 
 }
