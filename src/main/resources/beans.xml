@@ -13,6 +13,9 @@
             </list>
         </constructor-arg>
     </bean>
-    <bean id="httpService" class="com.monopoly.service.HttpService" />
+    <bean id="httpService" class="com.monopoly.service.HttpService">
+        <property name="host" value="localhost" />
+        <property name="port" value="8080" />
+    </bean>
 </beans>
 

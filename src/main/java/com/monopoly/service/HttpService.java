@@ -24,7 +24,7 @@ public class HttpService extends AbstractService {
     /**
      * Default server port
      */
-    protected static final int DEFAULT_PORT = 8080;
+    protected static final int DEFAULT_PORT = 80;
 
     /**
      * Server host (use default if it isn't defined)
