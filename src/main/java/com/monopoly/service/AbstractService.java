@@ -9,6 +9,9 @@ import com.monopoly.IApplication;
  */
 abstract public class AbstractService implements IService {
 
+    /**
+     * Game application
+     */
     protected IApplication application;
 
     @Override

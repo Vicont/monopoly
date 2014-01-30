@@ -12,4 +12,9 @@ public interface IApplication {
      */
     public void start();
 
+    /**
+     * Stop application
+     */
+    public void stop();
+
 }

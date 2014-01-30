@@ -24,6 +24,9 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
  */
 public class HttpConnectionHandler extends SimpleChannelInboundHandler<Object> {
 
+    /**
+     * Logger
+     */
     private static final Logger log = LoggerFactory.getLogger(HttpConnectionHandler.class);
     private static final byte[] CONTENT = { 'H', 'e', 'l', 'l', 'o', ' ', 'W', 'o', 'r', 'l', 'd' };
 

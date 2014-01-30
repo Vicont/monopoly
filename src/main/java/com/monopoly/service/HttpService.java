@@ -46,10 +46,20 @@ public class HttpService extends AbstractService {
      */
     private static final Logger log = LoggerFactory.getLogger(HttpService.class);
 
+    /**
+     * Set HTTP-server host
+     *
+     * @param host Hostname
+     */
     public void setHost(String host) {
         this.host = host;
     }
 
+    /**
+     * Set HTTP-server port
+     *
+     * @param port Port number
+     */
     public void setPort(int port) {
         this.port = port;
     }
@@ -63,9 +73,9 @@ public class HttpService extends AbstractService {
         try {
             bootstrap = new ServerBootstrap();
             bootstrap.group(bossGroup, workerGroup)
-                    .channel(NioServerSocketChannel.class)
-                    .childHandler(new HttpConnectionInitializer())
-                    .childOption(ChannelOption.SO_KEEPALIVE, true);
+                .channel(NioServerSocketChannel.class)
+                .childHandler(new HttpConnectionInitializer())
+                .childOption(ChannelOption.SO_KEEPALIVE, true);
 
             bootstrap.bind(host, port).sync();
         } catch (InterruptedException e) {

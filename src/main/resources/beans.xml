@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-2.0.xsd">
+
+    <bean id="application" class="com.monopoly.Application">
+        <property name="services" ref="services" />
+    </bean>
+    <bean id="services" class="java.util.ArrayList">
+        <constructor-arg>
+            <list>
+                <ref bean="httpService" />
+            </list>
+        </constructor-arg>
+    </bean>
+    <bean id="httpService" class="com.monopoly.service.HttpService" />
+</beans>
+
