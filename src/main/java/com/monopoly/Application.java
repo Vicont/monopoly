@@ -1,5 +1,6 @@
 package com.monopoly;
 
+import com.monopoly.service.HttpService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,7 +11,7 @@ import org.slf4j.LoggerFactory;
  */
 public class Application implements IApplication {
 
-    private final static Logger log = LoggerFactory.getLogger(Application.class);
+    private static final Logger log = LoggerFactory.getLogger(Application.class);
 
     private Application() {
     }
@@ -24,7 +25,8 @@ public class Application implements IApplication {
 
     @Override
     public void start() {
-
+        HttpService httpService = new HttpService();
+        httpService.activate();
     }
 
 }

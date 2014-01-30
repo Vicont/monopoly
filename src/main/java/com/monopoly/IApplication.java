@@ -10,6 +10,6 @@ public interface IApplication {
     /**
      * Start application
      */
-    void start();
+    public void start();
 
 }
