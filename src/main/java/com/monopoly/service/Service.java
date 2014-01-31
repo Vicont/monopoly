@@ -1,20 +1,20 @@
 package com.monopoly.service;
 
-import com.monopoly.IApplication;
+import com.monopoly.Application;
 
 /**
  * Interface for application service
  *
  * @author vicont
  */
-public interface IService {
+public interface Service {
 
     /**
      * Set current application
      *
      * @param application Game application
      */
-    public void setApplication(IApplication application);
+    public void setApplication(Application application);
 
     /**
      * Activate service and initialize resources

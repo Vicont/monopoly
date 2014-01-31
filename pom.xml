@@ -62,7 +62,7 @@
                 <configuration>
                     <archive>
                         <manifest>
-                            <mainClass>com.monopoly.Application</mainClass>
+                            <mainClass>com.monopoly.GameApplication</mainClass>
                         </manifest>
                     </archive>
                     <descriptorRefs>

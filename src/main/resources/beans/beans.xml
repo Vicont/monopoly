@@ -5,7 +5,7 @@
 
     <import resource="property-placeholder.xml"/>
 
-    <bean id="application" class="com.monopoly.Application">
+    <bean id="application" class="com.monopoly.GameApplication">
         <property name="services" ref="services" />
     </bean>
     <bean id="services" class="java.util.ArrayList">

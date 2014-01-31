@@ -1,21 +1,21 @@
 package com.monopoly.service;
 
-import com.monopoly.IApplication;
+import com.monopoly.Application;
 
 /**
  * Abstract application service
  *
  * @author vicont
  */
-abstract public class AbstractService implements IService {
+abstract public class AbstractService implements Service {
 
     /**
      * Game application
      */
-    protected IApplication application;
+    protected Application application;
 
     @Override
-    public void setApplication(IApplication application) {
+    public void setApplication(Application application) {
         this.application = application;
     }
 
