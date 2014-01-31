@@ -17,24 +17,24 @@ import org.slf4j.LoggerFactory;
 public class HttpService extends AbstractService {
 
     /**
-     * Default server host
+     * Maximum number of boss threads
      */
-    protected static final String DEFAULT_HOST = "localhost";
+    protected static final byte MAX_BOSS_THREADS = 1;
 
     /**
-     * Default server port
+     * Maximum number of worker threads
      */
-    protected static final int DEFAULT_PORT = 80;
+    protected byte maxWorkerThreads = 1;
 
     /**
-     * Server host (use default if it isn't defined)
+     * Server host
      */
-    protected String host = HttpService.DEFAULT_HOST;
+    protected String host = "localhost";
 
     /**
-     * Server port (use default if it isn't defined)
+     * Server port
      */
-    protected int port = HttpService.DEFAULT_PORT;
+    protected int port = 80;
 
     /**
      * Netty bootstrap
@@ -64,11 +64,20 @@ public class HttpService extends AbstractService {
         this.port = port;
     }
 
+    /**
+     * Set maximum number of worker threads
+     *
+     * @param maxWorkerThreads Max threads
+     */
+    public void setMaxWorkerThreads(byte maxWorkerThreads) {
+        this.maxWorkerThreads = maxWorkerThreads;
+    }
+
     @Override
     public void activate() {
-        byte maxThreads = 4;
-        EventLoopGroup bossGroup = new NioEventLoopGroup(1);
-        EventLoopGroup workerGroup = new NioEventLoopGroup(maxThreads);
+        EventLoopGroup bossGroup = new NioEventLoopGroup(MAX_BOSS_THREADS);
+        EventLoopGroup workerGroup = new NioEventLoopGroup(maxWorkerThreads);
+        log.info("threads: " + maxWorkerThreads);
 
         try {
             bootstrap = new ServerBootstrap();

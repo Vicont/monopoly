@@ -8,7 +8,7 @@ import org.aeonbits.owner.ConfigFactory;
  *
  * @author vicont
  */
-class ServerSettings {
+public class ServerSettings {
 
     /**
      * Base server settings

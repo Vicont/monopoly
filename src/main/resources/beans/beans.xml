@@ -19,5 +19,6 @@
         <property name="application" ref="application" />
         <property name="host" value="${http.server.host}" />
         <property name="port" value="${http.server.port}" />
+        <property name="maxWorkerThreads" value="${cpu.cores}" />
     </bean>
 </beans>
