@@ -20,6 +20,11 @@ public class Application implements IApplication {
     private List<IService> services;
 
     /**
+     * Server settings
+     */
+    private static ServerSettings settings;
+
+    /**
      * Logger
      */
     private static final Logger log = LoggerFactory.getLogger(Application.class);
@@ -49,8 +54,10 @@ public class Application implements IApplication {
     public static void main(String[] args) {
         log.info("Application is starting...");
 
+        settings = new ServerSettings();
+
         ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[]{"classpath*:/beans/beans.xml"}, false);
-        context.getEnvironment().setActiveProfiles("development");
+        context.getEnvironment().setActiveProfiles(settings.base.environment());
         context.refresh();
 
         IApplication app = context.getBean("application", IApplication.class);
@@ -75,6 +82,11 @@ public class Application implements IApplication {
         for (IService service : services) {
             service.shutdown();
         }
+    }
+
+    @Override
+    public ServerSettings getSettings() {
+        return settings;
     }
 
 }

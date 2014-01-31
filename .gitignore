@@ -1,6 +1,7 @@
-logs/
-*.log
-target
 .idea/libraries
 .idea/workspace.xml
 .idea/tasks.xml
+logs/
+*.log
+target
+src/main/resources/config/base.properties

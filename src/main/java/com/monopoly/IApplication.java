@@ -17,4 +17,11 @@ public interface IApplication {
      */
     public void stop();
 
+    /**
+     * Returns server settings
+     *
+     * @return Settings object
+     */
+    public ServerSettings getSettings();
+
 }
