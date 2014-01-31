@@ -3,7 +3,6 @@ package com.monopoly;
 import com.monopoly.service.IService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.util.List;
@@ -50,7 +49,10 @@ public class Application implements IApplication {
     public static void main(String[] args) {
         log.info("Application is starting...");
 
-        ApplicationContext context = new ClassPathXmlApplicationContext("beans.xml");
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[]{"classpath*:/beans/beans.xml"}, false);
+        context.getEnvironment().setActiveProfiles("development");
+        context.refresh();
+
         IApplication app = context.getBean("application", IApplication.class);
         app.start();
 

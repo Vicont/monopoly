@@ -78,6 +78,7 @@ public class HttpService extends AbstractService {
                 .childOption(ChannelOption.SO_KEEPALIVE, true);
 
             bootstrap.bind(host, port).sync();
+            log.info("HTTP server started on " + host + ":" + port);
         } catch (InterruptedException e) {
             log.error("An interrupted exception thrown: ", e);
         }
