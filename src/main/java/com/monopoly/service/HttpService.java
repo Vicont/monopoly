@@ -77,7 +77,6 @@ public class HttpService extends AbstractService {
     public void activate() {
         EventLoopGroup bossGroup = new NioEventLoopGroup(MAX_BOSS_THREADS);
         EventLoopGroup workerGroup = new NioEventLoopGroup(maxWorkerThreads);
-        log.info("threads: " + maxWorkerThreads);
 
         try {
             bootstrap = new ServerBootstrap();
