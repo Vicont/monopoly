@@ -74,7 +74,10 @@ public class HttpServerResponse {
         }
 
         ChannelFuture f = ctx.write(this.res);
-        f.addListener(ChannelFutureListener.CLOSE);
+
+        if (!this.isKeepAlive) {
+            f.addListener(ChannelFutureListener.CLOSE);
+        }
     }
 
     public void end(String content) {
