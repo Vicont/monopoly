@@ -19,13 +19,13 @@ public class HttpServerRequestTest {
 
     @Before
     public void createRequest() {
-        nettyReq = new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "http://example.com/");
+        nettyReq = new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "http://example.com/location?param=value");
         request = new HttpServerRequest(nettyReq);
     }
 
     @Test
     public void testUri() {
-        assertEquals("http://example.com/", request.getUri());
+        assertEquals("http://example.com/location?param=value", request.getUri());
     }
 
     @Test
@@ -52,21 +52,20 @@ public class HttpServerRequestTest {
 
     @Test
     public void testParams() {
-        assertNull(request.getParam("param"));
-
-        request.setParam("param", "value");
+        assertNull(request.getParam("param2"));
         assertEquals("value", request.getParam("param"));
-        assertEquals("value", request.getParams().get("param"));
+
+        request.setParam("param2", "value2");
+        assertEquals("value2", request.getParam("param2"));
+        assertEquals("value2", request.getParams().get("param2"));
+
+        //request.setBody("param3=value3");
+        //assertEquals("value3", request.getParam("param3"));
     }
 
     @Test
     public void testCookies() {
         assertNull(request.getCookie("key1"));
-
-        Cookie cookie = new DefaultCookie("key1", "value1");
-        request.setCookie("key", cookie);
-        assertEquals(cookie, request.getCookie("key"));
-        assertEquals(cookie, request.getCookies().get("key"));
     }
 
     @Test

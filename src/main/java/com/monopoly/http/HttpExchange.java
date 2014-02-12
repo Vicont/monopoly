@@ -8,13 +8,9 @@ import io.netty.util.CharsetUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.HashSet;
-import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
-import static io.netty.handler.codec.http.HttpHeaders.Names.*;
-import static io.netty.handler.codec.http.HttpHeaders.*;
+import static io.netty.handler.codec.http.HttpHeaders.is100ContinueExpected;
 import static io.netty.handler.codec.http.HttpResponseStatus.*;
 
 /**
@@ -24,10 +20,19 @@ import static io.netty.handler.codec.http.HttpResponseStatus.*;
  */
 public class HttpExchange {
 
+    /**
+     * Netty channel context
+     */
     private ChannelHandlerContext context;
 
+    /**
+     * HTTP request
+     */
     private HttpServerRequest request;
 
+    /**
+     * HTTP response
+     */
     private HttpServerResponse response;
 
     /**
@@ -35,22 +40,23 @@ public class HttpExchange {
      */
     private static final Logger log = LoggerFactory.getLogger(HttpExchange.class);
 
+    /**
+     * Set netty channel context
+     *
+     * @param ctx Context object
+     */
     public void setContext(ChannelHandlerContext ctx) {
         this.context = ctx;
     }
 
+    /**
+     * Handle HTTP request message
+     *
+     * @param req Request message
+     */
     public void handleHttpRequest(HttpRequest req) {
         this.checkDecoderResult(req);
-
         this.request = new HttpServerRequest(req);
-
-        Set<Cookie> cookies = this.decodeCookies();
-        for (Cookie cookie : cookies) {
-            this.request.setCookie(cookie.getName(), cookie);
-        }
-
-        Map<String, List<String>> params = this.decodeParams(req.getUri());
-        this.applyRequestParams(params);
 
         if (is100ContinueExpected(req)) {
             response = new HttpServerResponse(this.context, CONTINUE, false);
@@ -58,6 +64,11 @@ public class HttpExchange {
         }
     }
 
+    /**
+     * Handle HTTP content message
+     *
+     * @param httpContent Content message
+     */
     public void handleHttpContent(HttpContent httpContent) {
         this.checkDecoderResult(httpContent);
 
@@ -66,9 +77,6 @@ public class HttpExchange {
         if (content.isReadable()) {
             String body = content.toString(CharsetUtil.UTF_8);
             this.request.setBody(body);
-
-            Map<String, List<String>> params = this.decodeParams(body);
-            this.applyRequestParams(params);
         }
 
         if (httpContent instanceof LastHttpContent) {
@@ -85,40 +93,15 @@ public class HttpExchange {
         }
     }
 
+    /**
+     * Check the result of decoding this message
+     *
+     * @param o Message
+     */
     private void checkDecoderResult(HttpObject o) {
         DecoderResult result = o.getDecoderResult();
         if (!result.isSuccess()) {
             log.error("Http decoder failure: ", result.cause());
-        }
-    }
-
-    private Set<Cookie> decodeCookies() {
-        Set<Cookie> cookieSet;
-
-        String cookieString = this.request.getHeaders().get(COOKIE);
-        if (cookieString != null) {
-            cookieSet = CookieDecoder.decode(cookieString);
-        } else {
-            cookieSet = new HashSet<Cookie>();
-        }
-
-        return cookieSet;
-    }
-
-    private Map<String, List<String>> decodeParams(String data) {
-        QueryStringDecoder queryStringDecoder = new QueryStringDecoder(data);
-        return queryStringDecoder.parameters();
-    }
-
-    private void applyRequestParams(Map<String, List<String>> params) {
-        if (!params.isEmpty()) {
-            for (Map.Entry<String, List<String>> param: params.entrySet()) {
-                String key = param.getKey();
-                List<String> values = param.getValue();
-                for (String value : values) {
-                    this.request.setParam(key, value);
-                }
-            }
         }
     }
 
