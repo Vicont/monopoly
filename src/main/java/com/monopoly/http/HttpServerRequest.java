@@ -14,8 +14,6 @@ public class HttpServerRequest {
 
     private HttpRequest req;
 
-    private String host;
-
     private Map<String, Cookie> cookies = new HashMap<String, Cookie>();
 
     private Map<String, String> params = new HashMap<String, String>();
@@ -24,7 +22,6 @@ public class HttpServerRequest {
 
     public HttpServerRequest(HttpRequest req) {
         this.req = req;
-        this.host = HttpHeaders.getHost(req, "unknown");
     }
 
     public HttpVersion getProtocolVersion() {
@@ -35,16 +32,20 @@ public class HttpServerRequest {
         return req.getMethod();
     }
 
-    public String getHost() {
-        return this.host;
-    }
-
     public String getUri() {
         return req.getUri();
     }
 
     public HttpHeaders getHeaders() {
         return req.headers();
+    }
+
+    public String getHost() {
+        return HttpHeaders.getHost(req, "unknown");
+    }
+
+    public boolean isKeepAlive() {
+        return HttpHeaders.isKeepAlive(req);
     }
 
     public void setParam(String name, String value) {

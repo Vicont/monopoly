@@ -26,10 +26,6 @@ public class HttpExchange {
 
     private ChannelHandlerContext context;
 
-    private HttpRequest req;
-
-    private HttpResponse res;
-
     private HttpServerRequest request;
 
     private HttpServerResponse response;
@@ -46,7 +42,6 @@ public class HttpExchange {
     public void handleHttpRequest(HttpRequest req) {
         this.checkDecoderResult(req);
 
-        this.req = req;
         this.request = new HttpServerRequest(req);
 
         Set<Cookie> cookies = this.decodeCookies();
@@ -58,7 +53,7 @@ public class HttpExchange {
         this.applyRequestParams(params);
 
         if (is100ContinueExpected(req)) {
-            HttpServerResponse response = new HttpServerResponse(this.context, CONTINUE, false);
+            response = new HttpServerResponse(this.context, CONTINUE, false);
             response.end();
         }
     }
@@ -78,7 +73,7 @@ public class HttpExchange {
 
         if (httpContent instanceof LastHttpContent) {
             HttpResponseStatus status = (httpContent.getDecoderResult().isSuccess()) ? OK : BAD_REQUEST;
-            HttpServerResponse response = new HttpServerResponse(this.context, status, isKeepAlive(this.req));
+            response = new HttpServerResponse(this.context, status, this.request.isKeepAlive());
 
             response.write("Hello, world!");
 
@@ -100,7 +95,7 @@ public class HttpExchange {
     private Set<Cookie> decodeCookies() {
         Set<Cookie> cookieSet;
 
-        String cookieString = this.req.headers().get(COOKIE);
+        String cookieString = this.request.getHeaders().get(COOKIE);
         if (cookieString != null) {
             cookieSet = CookieDecoder.decode(cookieString);
         } else {

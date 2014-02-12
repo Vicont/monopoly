@@ -13,12 +13,13 @@ import static org.junit.Assert.*;
  */
 public class HttpServerRequestTest {
 
+    private HttpRequest nettyReq;
+
     private HttpServerRequest request;
 
     @Before
     public void createRequest() {
-        HttpRequest nettyReq = new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "http://example.com/");
-        HttpHeaders.setHost(nettyReq, "example.org");
+        nettyReq = new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "http://example.com/");
         request = new HttpServerRequest(nettyReq);
     }
 
@@ -39,7 +40,14 @@ public class HttpServerRequestTest {
 
     @Test
     public void testHost() {
+        HttpHeaders.setHost(nettyReq, "example.org");
         assertEquals("example.org", request.getHost());
+    }
+
+    @Test
+    public void testIsKeepAlive() {
+        HttpHeaders.setKeepAlive(nettyReq, true);
+        assertTrue(request.isKeepAlive());
     }
 
     @Test
