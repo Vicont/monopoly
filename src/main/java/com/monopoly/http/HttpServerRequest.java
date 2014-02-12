@@ -41,7 +41,7 @@ public class HttpServerRequest {
     public HttpServerRequest(HttpRequest req) {
         this.req = req;
 
-        this.decodeParams(req.getUri());
+        this.decodeParams(req.getUri(), true);
         this.decodeCookies();
     }
 
@@ -154,7 +154,7 @@ public class HttpServerRequest {
      */
     public void setBody(String body) {
         this.body = body;
-        this.decodeParams(body);
+        this.decodeParams(body, false);
     }
 
     /**
@@ -170,9 +170,10 @@ public class HttpServerRequest {
      * Decode parameters from string and store them
      *
      * @param data Uri or another parameters string
+     * @param hasPath True if data contains path
      */
-    private void decodeParams(String data) {
-        QueryStringDecoder queryStringDecoder = new QueryStringDecoder(data);
+    private void decodeParams(String data, boolean hasPath) {
+        QueryStringDecoder queryStringDecoder = new QueryStringDecoder(data, hasPath);
         Map<String, List<String>> params = queryStringDecoder.parameters();
 
         if (!params.isEmpty()) {

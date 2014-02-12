@@ -59,8 +59,9 @@ public class HttpServerRequestTest {
         assertEquals("value2", request.getParam("param2"));
         assertEquals("value2", request.getParams().get("param2"));
 
-        //request.setBody("param3=value3");
-        //assertEquals("value3", request.getParam("param3"));
+        request.setBody("param3=value3&param4=value4");
+        assertEquals("value3", request.getParam("param3"));
+        assertEquals("value4", request.getParams().get("param4"));
     }
 
     @Test
