@@ -1,0 +1,25 @@
+<html>
+<head>
+    <script type="text/javascript" src="/lib/socket.io.js" charset="utf-8"></script>
+</head>
+
+<body>
+    <script type="text/javascript">
+
+        var socket = io.connect('http://ws.monopoly.local', {
+            'reconnection delay' : 2000,
+            'force new connection' : true
+        });
+
+        socket.on('message', function (data) {
+            console.log('new message:', data);
+        });
+
+        socket.on('connect', function() {
+            console.log('new connection established');
+            socket.send('ping');
+        });
+
+    </script>
+</body>
+</html>

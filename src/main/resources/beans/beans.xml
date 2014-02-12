@@ -12,6 +12,7 @@
         <constructor-arg>
             <list>
                 <ref bean="httpService" />
+                <ref bean="webSocketService" />
             </list>
         </constructor-arg>
     </bean>
@@ -19,6 +20,12 @@
         <property name="application" ref="application" />
         <property name="host" value="${http.server.host}" />
         <property name="port" value="${http.server.port}" />
+        <property name="maxWorkerThreads" value="${cpu.cores}" />
+    </bean>
+    <bean id="webSocketService" class="com.monopoly.service.WebSocketService">
+        <property name="application" ref="application" />
+        <property name="host" value="${websocket.server.host}" />
+        <property name="port" value="${websocket.server.port}" />
         <property name="maxWorkerThreads" value="${cpu.cores}" />
     </bean>
 </beans>

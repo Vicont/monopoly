@@ -45,6 +45,11 @@
             <artifactId>owner</artifactId>
             <version>1.0.5</version>
         </dependency>
+        <dependency>
+            <groupId>com.corundumstudio.socketio</groupId>
+            <artifactId>netty-socketio</artifactId>
+            <version>1.6.2</version>
+        </dependency>
     </dependencies>
 
     <build>
