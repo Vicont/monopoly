@@ -1,6 +1,8 @@
 package com.monopoly.http;
 
 import io.netty.buffer.ByteBuf;
+import io.netty.channel.ChannelFuture;
+import io.netty.channel.ChannelFutureListener;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.http.*;
 import io.netty.util.CharsetUtil;
@@ -71,7 +73,8 @@ public class HttpServerResponse {
             }
         }
 
-        ctx.write(this.res);
+        ChannelFuture f = ctx.write(this.res);
+        f.addListener(ChannelFutureListener.CLOSE);
     }
 
     public void end(String content) {
