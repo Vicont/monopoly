@@ -13,7 +13,4 @@ public interface BaseConfig extends Config {
 
     String environment();
 
-    @Key("cpu.cores")
-    Byte cpuCores();
-
 }

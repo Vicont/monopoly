@@ -19,12 +19,12 @@ public class HttpService extends AbstractService {
     /**
      * Maximum number of boss threads
      */
-    protected static final byte MAX_BOSS_THREADS = 1;
+    protected int maxBossThreads = 1;
 
     /**
      * Maximum number of worker threads
      */
-    protected byte maxWorkerThreads = 1;
+    protected int maxWorkerThreads = Runtime.getRuntime().availableProcessors();
 
     /**
      * Server host
@@ -65,17 +65,26 @@ public class HttpService extends AbstractService {
     }
 
     /**
+     * Set maximum number of boss threads
+     *
+     * @param maxBossThreads Max threads
+     */
+    public void setMaxBossThreads(int maxBossThreads) {
+        this.maxBossThreads = maxBossThreads;
+    }
+
+    /**
      * Set maximum number of worker threads
      *
      * @param maxWorkerThreads Max threads
      */
-    public void setMaxWorkerThreads(byte maxWorkerThreads) {
+    public void setMaxWorkerThreads(int maxWorkerThreads) {
         this.maxWorkerThreads = maxWorkerThreads;
     }
 
     @Override
     public void activate() {
-        EventLoopGroup bossGroup = new NioEventLoopGroup(MAX_BOSS_THREADS);
+        EventLoopGroup bossGroup = new NioEventLoopGroup(maxBossThreads);
         EventLoopGroup workerGroup = new NioEventLoopGroup(maxWorkerThreads);
 
         try {

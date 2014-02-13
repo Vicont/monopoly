@@ -16,12 +16,12 @@ public class WebSocketService extends AbstractService {
     /**
      * Maximum number of boss threads
      */
-    protected static final byte MAX_BOSS_THREADS = 1;
+    protected int maxBossThreads = 1;
 
     /**
      * Maximum number of worker threads
      */
-    protected byte maxWorkerThreads = 1;
+    protected int maxWorkerThreads = Runtime.getRuntime().availableProcessors();
 
     /**
      * Server host
@@ -62,11 +62,20 @@ public class WebSocketService extends AbstractService {
     }
 
     /**
+     * Set maximum number of boss threads
+     *
+     * @param maxBossThreads Max threads
+     */
+    public void setMaxBossThreads(int maxBossThreads) {
+        this.maxBossThreads = maxBossThreads;
+    }
+
+    /**
      * Set maximum number of worker threads
      *
      * @param maxWorkerThreads Max threads
      */
-    public void setMaxWorkerThreads(byte maxWorkerThreads) {
+    public void setMaxWorkerThreads(int maxWorkerThreads) {
         this.maxWorkerThreads = maxWorkerThreads;
     }
 
@@ -77,7 +86,7 @@ public class WebSocketService extends AbstractService {
         Configuration config = new Configuration();
         config.setHostname(host);
         config.setPort(port);
-        config.setBossThreads(MAX_BOSS_THREADS);
+        config.setBossThreads(maxBossThreads);
         config.setWorkerThreads(maxWorkerThreads);
         config.setAuthorizationListener(handler);
 
