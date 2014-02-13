@@ -20,6 +20,7 @@ public class HttpServerRequestTest {
     @Before
     public void createRequest() {
         nettyReq = new DefaultHttpRequest(HttpVersion.HTTP_1_1, HttpMethod.GET, "http://example.com/location?param=value");
+        nettyReq.headers().set(HttpHeaders.Names.COOKIE, "cookie2=value2;");
         request = new HttpServerRequest(nettyReq);
     }
 
@@ -66,7 +67,8 @@ public class HttpServerRequestTest {
 
     @Test
     public void testCookies() {
-        assertNull(request.getCookie("key1"));
+        assertNull(request.getCookie("cookie1"));
+        assertEquals("value2", request.getCookie("cookie2").getValue());
     }
 
     @Test
@@ -75,6 +77,12 @@ public class HttpServerRequestTest {
 
         request.setBody("some content");
         assertEquals("some content", request.getBody());
+    }
+
+    @Test(expected=UnsupportedOperationException.class)
+    public void testResetBody() {
+        request.setBody("some content");
+        request.setBody("new content");
     }
 
     @Test

@@ -151,10 +151,15 @@ public class HttpServerRequest {
      * Set body content
      *
      * @param body Body content
+     * @throws UnsupportedOperationException
      */
-    public void setBody(String body) {
-        this.body = body;
-        this.decodeParams(body, false);
+    public void setBody(String body) throws UnsupportedOperationException {
+        if (this.body == null) {
+            this.body = body;
+            this.decodeParams(body, false);
+        } else {
+            throw new UnsupportedOperationException("Request body have already decoded");
+        }
     }
 
     /**
