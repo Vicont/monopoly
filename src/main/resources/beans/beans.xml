@@ -33,12 +33,8 @@
         <property name="routes">
             <set>
                 <bean class="com.monopoly.http.dispatcher.Route">
-                    <property name="pattern" value="/cmd/command1" />
-                    <property name="dispatcher" value="com.monopoly.dispatcher.Dispatcher" />
-                </bean>
-                <bean class="com.monopoly.http.dispatcher.Route">
-                    <property name="pattern" value="/cmd/command2" />
-                    <property name="dispatcher" value="com.monopoly.dispatcher.Dispatcher" />
+                    <property name="pattern" value="/cmd/command" />
+                    <property name="dispatcher" value="com.monopoly.dispatchers.HttpCommandDispatcher" />
                 </bean>
             </set>
         </property>

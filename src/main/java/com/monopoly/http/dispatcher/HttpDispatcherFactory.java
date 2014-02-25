@@ -1,6 +1,5 @@
 package com.monopoly.http.dispatcher;
 
-import com.monopoly.dispatcher.Dispatcher;
 import com.monopoly.http.HttpServerRequest;
 import com.monopoly.http.dispatcher.exception.HttpDispatcherNotFoundException;
 import com.monopoly.http.dispatcher.exception.InvalidHttpDispatcherException;
@@ -36,7 +35,7 @@ public class HttpDispatcherFactory {
      * @throws HttpDispatcherNotFoundException
      * @throws InvalidHttpDispatcherException
      */
-    public Dispatcher getDispatcher(HttpServerRequest request) throws HttpDispatcherNotFoundException, InvalidHttpDispatcherException {
+    public HttpDispatcher getDispatcher(HttpServerRequest request) throws HttpDispatcherNotFoundException, InvalidHttpDispatcherException {
         String uri = request.getUri();
 
         for (Route route : this.routes) {
@@ -45,7 +44,7 @@ public class HttpDispatcherFactory {
             if (uri.equals(pattern)) {
                 Class dispatcherClass = route.getDispatcher();
                 try {
-                    return (Dispatcher) dispatcherClass.newInstance();
+                    return (HttpDispatcher) dispatcherClass.newInstance();
                 } catch (Exception e) {
                     String message = "Dispatcher for request \"" + uri + "\" with class [" + dispatcherClass.getName() + "] is invalid";
                     throw new InvalidHttpDispatcherException(message);
