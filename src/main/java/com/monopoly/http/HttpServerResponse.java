@@ -19,18 +19,43 @@ import static io.netty.handler.codec.http.HttpVersion.HTTP_1_1;
  */
 public class HttpServerResponse {
 
+    /**
+     * Decorated Netty response object
+     */
     private FullHttpResponse res;
 
+    /**
+     * Netty context linking channel with handler
+     */
     private ChannelHandlerContext ctx;
 
+    /**
+     * Output buffer
+     */
     private ByteBuf output;
 
+    /**
+     * True if the connection can remain open and thus 'kept alive'
+     */
     private boolean isKeepAlive;
 
+    /**
+     * True if response contains content for sending
+     */
     private boolean hasContent = false;
 
+    /**
+     * Response charset
+     */
     private Charset charset = CharsetUtil.UTF_8;
 
+    /**
+     * Constructor
+     *
+     * @param ctx Netty channel handler context
+     * @param status Response status
+     * @param isKeepAlive Is connection keep-alive
+     */
     public HttpServerResponse(ChannelHandlerContext ctx, HttpResponseStatus status, boolean isKeepAlive) {
         this.ctx = ctx;
         this.isKeepAlive = isKeepAlive;
@@ -38,31 +63,64 @@ public class HttpServerResponse {
         this.res = new DefaultFullHttpResponse(HTTP_1_1, status, this.output);
     }
 
+    /**
+     * Set response charset
+     *
+     * @param charset Charset
+     */
     public void setCharset(Charset charset) {
         this.charset = charset;
     }
 
+    /**
+     * Retrieve response charset
+     *
+     * @return Charset
+     */
     public Charset getCharset() {
         return this.charset;
     }
 
+    /**
+     * Set response HTTP status
+     *
+     * @param status HTTP status
+     */
     public void setStatus(HttpResponseStatus status) {
         this.res.setStatus(status);
     }
 
+    /**
+     * Retrieve response HTTP status
+     *
+     * @return HTTP status
+     */
     public HttpResponseStatus getStatus() {
         return this.res.getStatus();
     }
 
+    /**
+     * Write content
+     *
+     * @param content Content
+     */
     public void write(String content) {
         this.hasContent = true;
         this.output.writeBytes(content.getBytes(this.charset));
     }
 
+    /**
+     * Set cookie object
+     *
+     * @param cookie Cookie object
+     */
     public void setCookie(Cookie cookie) {
         this.res.headers().add(SET_COOKIE, ServerCookieEncoder.encode(cookie));
     }
 
+    /**
+     * Stop writing response and send it to client
+     */
     public void end() {
         if (this.hasContent) {
             this.res.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
@@ -80,6 +138,11 @@ public class HttpServerResponse {
         }
     }
 
+    /**
+     * Write last portion of content and send response
+     *
+     * @param content Content
+     */
     public void end(String content) {
         this.write(content);
         this.end();

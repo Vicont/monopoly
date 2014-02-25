@@ -14,7 +14,7 @@ import static io.netty.handler.codec.http.HttpHeaders.Names.COOKIE;
 public class HttpServerRequest {
 
     /**
-     * Decorated netty request object
+     * Decorated Netty request object
      */
     private HttpRequest req;
 
