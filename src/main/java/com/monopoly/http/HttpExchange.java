@@ -1,5 +1,8 @@
 package com.monopoly.http;
 
+import com.monopoly.ApplicationContextManager;
+import com.monopoly.dispatcher.Dispatcher;
+import com.monopoly.http.dispatcher.HttpDispatcherFactory;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.DecoderResult;
@@ -83,7 +86,15 @@ public class HttpExchange {
             HttpResponseStatus status = (httpContent.getDecoderResult().isSuccess()) ? OK : BAD_REQUEST;
             response = new HttpServerResponse(this.context, status, this.request.isKeepAlive());
 
-            response.write("Hello, world!");
+            try {
+                HttpDispatcherFactory factory = ApplicationContextManager.getContext().getBean("httpDispatcherFactory", HttpDispatcherFactory.class);
+                Dispatcher dispatcher = factory.getDispatcher(this.request);
+                log.info(dispatcher.toString());
+                response.write("Hello, world!\n");
+            } catch (Exception e) {
+                response.setStatus(INTERNAL_SERVER_ERROR);
+                response.write(e.toString() + "\n");
+            }
 
             for (Map.Entry<String, Cookie> entry : this.request.getCookies().entrySet()) {
                 response.setCookie(entry.getValue());

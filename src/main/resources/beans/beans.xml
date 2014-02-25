@@ -1,29 +1,47 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans"
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <context:component-scan base-package="com.monopoly" />
 
     <import resource="property-placeholder.xml"/>
 
     <bean id="application" class="com.monopoly.GameApplication">
-        <property name="services" ref="services" />
-    </bean>
-    <bean id="services" class="java.util.ArrayList">
-        <constructor-arg>
+        <property name="services">
             <list>
                 <ref bean="httpService" />
                 <ref bean="webSocketService" />
             </list>
-        </constructor-arg>
+        </property>
     </bean>
+
     <bean id="httpService" class="com.monopoly.service.HttpService">
         <property name="application" ref="application" />
         <property name="host" value="${http.server.host}" />
         <property name="port" value="${http.server.port}" />
     </bean>
+
     <bean id="webSocketService" class="com.monopoly.service.WebSocketService">
         <property name="application" ref="application" />
         <property name="host" value="${websocket.server.host}" />
         <property name="port" value="${websocket.server.port}" />
     </bean>
+
+    <bean id="httpDispatcherFactory" class="com.monopoly.http.dispatcher.HttpDispatcherFactory">
+        <property name="routes">
+            <set>
+                <bean class="com.monopoly.http.dispatcher.Route">
+                    <property name="pattern" value="/cmd/command1" />
+                    <property name="dispatcher" value="com.monopoly.dispatcher.Dispatcher" />
+                </bean>
+                <bean class="com.monopoly.http.dispatcher.Route">
+                    <property name="pattern" value="/cmd/command2" />
+                    <property name="dispatcher" value="com.monopoly.dispatcher.Dispatcher" />
+                </bean>
+            </set>
+        </property>
+    </bean>
+
 </beans>
