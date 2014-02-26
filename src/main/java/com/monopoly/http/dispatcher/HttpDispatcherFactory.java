@@ -4,6 +4,9 @@ import com.monopoly.http.HttpServerRequest;
 import com.monopoly.http.dispatcher.exception.HttpDispatcherNotFoundException;
 import com.monopoly.http.dispatcher.exception.InvalidHttpDispatcherException;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 /**
@@ -14,17 +17,20 @@ import java.util.Set;
 public class HttpDispatcherFactory {
 
     /**
-     * Routes list
+     * Route list
      */
-    private Set<Route> routes;
+    private List<ConstructedRoute> routes;
 
     /**
-     * Set available routes
+     * Constructor
      *
-     * @param routes Routes
+     * @param routes Route list
      */
-    public void setRoutes(Set<Route> routes) {
-        this.routes = routes;
+    public HttpDispatcherFactory(Set<Route> routes) {
+        this.routes = new ArrayList<ConstructedRoute>();
+        for (Route route : routes) {
+            this.routes.add(new ConstructedRoute(route));
+        }
     }
 
     /**
@@ -38,11 +44,15 @@ public class HttpDispatcherFactory {
     public HttpDispatcher getDispatcher(HttpServerRequest request) throws HttpDispatcherNotFoundException, InvalidHttpDispatcherException {
         String uri = request.getUri();
 
-        for (Route route : this.routes) {
-            String pattern = route.getPattern();
+        for (ConstructedRoute constructedRoute : this.routes) {
+            if (constructedRoute.matches(uri)) {
+                Class dispatcherClass = constructedRoute.getDispatcher();
 
-            if (uri.equals(pattern)) {
-                Class dispatcherClass = route.getDispatcher();
+                Map<String, String> params = constructedRoute.findParams(uri);
+                for (String name : params.keySet()) {
+                    request.setParam(name, params.get(name));
+                }
+
                 try {
                     return (HttpDispatcher) dispatcherClass.newInstance();
                 } catch (Exception e) {

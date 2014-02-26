@@ -9,7 +9,7 @@ import com.monopoly.http.dispatcher.HttpDispatcher;
  *
  * @author vicont
  */
-public class HttpCommandDispatcher implements HttpDispatcher {
+public class HttpRequestDispatcher implements HttpDispatcher {
 
     /**
      * HTTP request
@@ -27,7 +27,8 @@ public class HttpCommandDispatcher implements HttpDispatcher {
         this.response = response;
 
         response.write("You've requested URI: " + request.getUri() + "\n");
-        response.write("Command: " + request.getParam("commandName") + "\n");
+        response.write("Controller: " + request.getParam("controllerName") + "\n");
+        response.write("Action: " + request.getParam("actionName") + "\n");
         response.end();
     }
 
