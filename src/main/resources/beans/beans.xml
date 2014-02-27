@@ -6,7 +6,8 @@
 
     <context:component-scan base-package="com.monopoly" />
 
-    <import resource="property-placeholder.xml"/>
+    <import resource="property-placeholder.xml" />
+    <import resource="http/routes.xml" />
 
     <bean id="application" class="com.monopoly.GameApplication">
         <property name="services">
@@ -30,18 +31,7 @@
     </bean>
 
     <bean id="httpDispatcherFactory" class="com.monopoly.http.dispatcher.HttpDispatcherFactory">
-        <constructor-arg>
-            <set>
-                <bean class="com.monopoly.http.dispatcher.Route">
-                    <property name="pattern" value="/cmd/:commandName" />
-                    <property name="dispatcher" value="com.monopoly.dispatchers.HttpCommandDispatcher" />
-                </bean>
-                <bean class="com.monopoly.http.dispatcher.Route">
-                    <property name="pattern" value="/:controllerName/:actionName" />
-                    <property name="dispatcher" value="com.monopoly.dispatchers.HttpRequestDispatcher" />
-                </bean>
-            </set>
-        </constructor-arg>
+        <constructor-arg ref="routes" />
     </bean>
 
 </beans>

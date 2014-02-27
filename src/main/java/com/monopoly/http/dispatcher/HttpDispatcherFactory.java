@@ -46,19 +46,19 @@ public class HttpDispatcherFactory {
 
         for (ConstructedRoute constructedRoute : this.routes) {
             if (constructedRoute.matches(uri)) {
+                HttpDispatcher dispatcher;
                 Class dispatcherClass = constructedRoute.getDispatcher();
 
-                Map<String, String> params = constructedRoute.findParams(uri);
-                for (String name : params.keySet()) {
-                    request.setParam(name, params.get(name));
-                }
-
                 try {
-                    return (HttpDispatcher) dispatcherClass.newInstance();
+                    dispatcher = (HttpDispatcher) dispatcherClass.newInstance();
                 } catch (Exception e) {
                     String message = "Dispatcher for request \"" + uri + "\" with class [" + dispatcherClass.getName() + "] is invalid";
                     throw new InvalidHttpDispatcherException(message);
                 }
+
+                Map<String, String> params = constructedRoute.findParams(uri);
+                dispatcher.setParams(params);
+                return dispatcher;
             }
         }
 
