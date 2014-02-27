@@ -7,7 +7,6 @@ import com.monopoly.http.dispatcher.exception.InvalidHttpDispatcherException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * Factory that picks dispatcher for HTTP request
@@ -26,7 +25,7 @@ public class HttpDispatcherFactory {
      *
      * @param routes Route list
      */
-    public HttpDispatcherFactory(Set<Route> routes) {
+    public HttpDispatcherFactory(List<Route> routes) {
         this.routes = new ArrayList<ConstructedRoute>();
         for (Route route : routes) {
             this.routes.add(new ConstructedRoute(route));
