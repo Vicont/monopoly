@@ -15,16 +15,16 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 /**
- * HttpDispatcherFactoryTest
+ * RouterTest
  *
  * @author vicont
  */
-public class HttpDispatcherFactoryTest {
+public class RouterTest {
 
     /**
-     * Dispatcher's factory
+     * router
      */
-    private HttpDispatcherFactory factory;
+    private Router router;
 
     @Before
     public void setUp() {
@@ -41,21 +41,21 @@ public class HttpDispatcherFactoryTest {
         route.setDispatcher(HttpCommandDispatcher.class);
         routes.add(route);
 
-        this.factory = new HttpDispatcherFactory(routes);
+        this.router = new Router(routes);
     }
 
     @Test(expected = HttpDispatcherNotFoundException.class)
     public void testGetDispatcherWithUnroutableUri() throws HttpDispatcherNotFoundException, InvalidHttpDispatcherException {
         HttpServerRequest request = mock(HttpServerRequest.class);
         when(request.getUri()).thenReturn("/foo");
-        this.factory.getDispatcher(request);
+        this.router.getDispatcher(request);
     }
 
     @Test(expected = InvalidHttpDispatcherException.class)
     public void testGetInvalidDispatcher() throws HttpDispatcherNotFoundException, InvalidHttpDispatcherException {
         HttpServerRequest request = mock(HttpServerRequest.class);
         when(request.getUri()).thenReturn("/someUri/baz");
-        this.factory.getDispatcher(request);
+        this.router.getDispatcher(request);
     }
 
     @Test
@@ -63,7 +63,7 @@ public class HttpDispatcherFactoryTest {
         HttpServerRequest request = mock(HttpServerRequest.class);
         when(request.getUri()).thenReturn("/foo/bar");
 
-        HttpDispatcher dispatcher = this.factory.getDispatcher(request);
+        HttpDispatcher dispatcher = this.router.getDispatcher(request);
         assertEquals(HttpCommandDispatcher.class, dispatcher.getClass());
     }
 

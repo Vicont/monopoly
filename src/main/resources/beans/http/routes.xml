@@ -3,9 +3,9 @@
        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
 
-    <bean id="routes" class="java.util.HashSet">
+    <bean id="routes" class="java.util.ArrayList">
         <constructor-arg>
-            <set>
+            <list>
                 <bean class="com.monopoly.http.dispatcher.Route">
                     <property name="pattern" value="/cmd/:commandName" />
                     <property name="dispatcher" value="com.monopoly.dispatchers.HttpCommandDispatcher" />
@@ -14,7 +14,7 @@
                     <property name="pattern" value="/:controllerName/:actionName" />
                     <property name="dispatcher" value="com.monopoly.dispatchers.HttpRequestDispatcher" />
                 </bean>
-            </set>
+            </list>
         </constructor-arg>
     </bean>
 

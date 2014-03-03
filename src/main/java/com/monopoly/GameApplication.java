@@ -1,5 +1,6 @@
 package com.monopoly;
 
+import com.monopoly.dispatchers.factory.HttpCommandDispatcherFactory;
 import com.monopoly.service.Service;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -60,8 +61,11 @@ public class GameApplication implements Application {
         context.getEnvironment().setActiveProfiles(settings.base.environment());
         context.refresh();
 
-        Application app = context.getBean("application", Application.class);
+        Application app = context.getBean(Application.class);
         app.start();
+
+        HttpCommandDispatcherFactory factory = context.getBean(HttpCommandDispatcherFactory.class);
+        factory.init();
 
         log.info("Application started");
     }
