@@ -26,7 +26,6 @@ public class Router {
      * @param routes Route list
      */
     public Router(List<Route> routes) {
-        System.out.println("Router initialized");
         this.routes = new ArrayList<ConstructedRoute>();
         for (Route route : routes) {
             this.routes.add(new ConstructedRoute(route));

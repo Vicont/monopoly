@@ -5,10 +5,6 @@ import com.monopoly.annotations.controller.CommandController;
 import com.monopoly.http.dispatcher.AbstractHttpDispatcherFactory;
 import com.monopoly.http.dispatcher.HttpDispatcher;
 import com.monopoly.http.dispatcher.exception.InvalidHttpDispatcherException;
-import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
-import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
-import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
@@ -21,17 +17,16 @@ import java.util.Map;
  * @author vicont
  */
 @Component
-@Scope("prototype")
-public class HttpCommandDispatcherFactory extends AbstractHttpDispatcherFactory implements BeanFactoryPostProcessor {
+public class HttpCommandDispatcherFactory extends AbstractHttpDispatcherFactory {
 
     private final Map<String, String> controllers = new HashMap<String, String>();
 
     @Override
-    public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
-        String[] names = beanFactory.getBeanNamesForAnnotation(CommandController.class);
+    public void init() {
+        String[] names = this.beanFactory.getBeanNamesForAnnotation(CommandController.class);
 
         for (String controllerName : names) {
-            String className = beanFactory.getBeanDefinition(controllerName).getBeanClassName();
+            String className = this.beanFactory.getBeanDefinition(controllerName).getBeanClassName();
             Class controllerClass;
 
             try {
@@ -57,16 +52,6 @@ public class HttpCommandDispatcherFactory extends AbstractHttpDispatcherFactory 
     }
 
     @Override
-    public void init() {
-
-    }
-
-    /**
-     * Retrieve dispatcher
-     *
-     * @return Dispatcher
-     * @throws com.monopoly.http.dispatcher.exception.InvalidHttpDispatcherException
-     */
     public HttpDispatcher getDispatcher(Map<String, String> params) throws InvalidHttpDispatcherException {
         if (!params.containsKey("commandName")) {
             throw new InvalidHttpDispatcherException("Parameter \"commandName\" is not found");
