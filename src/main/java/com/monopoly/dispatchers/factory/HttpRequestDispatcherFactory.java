@@ -1,6 +1,7 @@
 package com.monopoly.dispatchers.factory;
 
 import com.monopoly.dispatchers.HttpRequestDispatcher;
+import com.monopoly.dispatchers.definition.HttpCommandExecutionDefinition;
 import com.monopoly.http.dispatcher.AbstractHttpDispatcherFactory;
 import com.monopoly.http.dispatcher.HttpDispatcher;
 import com.monopoly.http.dispatcher.exception.InvalidHttpDispatcherException;
@@ -17,7 +18,7 @@ import java.util.Map;
 @Component
 public class HttpRequestDispatcherFactory extends AbstractHttpDispatcherFactory {
 
-    private final Map<String, String> controllers = new HashMap<String, String>();
+    private final Map<String,HttpCommandExecutionDefinition> controllers = new HashMap<String, HttpCommandExecutionDefinition>();
 
     @Override
     public void init() {
@@ -28,7 +29,7 @@ public class HttpRequestDispatcherFactory extends AbstractHttpDispatcherFactory 
     public HttpDispatcher getDispatcher(Map<String, String> params) throws InvalidHttpDispatcherException {
         HttpDispatcher dispatcher = applicationContext.getBean(HttpRequestDispatcher.class);
         dispatcher.setParams(params);
-        dispatcher.setControllers(controllers);
+        dispatcher.setDefinitions(controllers);
         return dispatcher;
     }
 

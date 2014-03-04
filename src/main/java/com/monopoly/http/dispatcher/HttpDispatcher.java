@@ -1,5 +1,6 @@
 package com.monopoly.http.dispatcher;
 
+import com.monopoly.dispatchers.definition.HttpCommandExecutionDefinition;
 import com.monopoly.http.HttpServerRequest;
 import com.monopoly.http.HttpServerResponse;
 import com.monopoly.http.dispatcher.exception.HttpDispatcherNotFoundException;
@@ -26,7 +27,7 @@ public interface HttpDispatcher {
      *
      * @param controllers Controllers map
      */
-    void setControllers(Map<String, String> controllers);
+    void setDefinitions(Map<String, HttpCommandExecutionDefinition> controllers);
 
     /**
      * Dispatch request

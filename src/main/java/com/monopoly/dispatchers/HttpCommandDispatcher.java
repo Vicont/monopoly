@@ -1,5 +1,6 @@
 package com.monopoly.dispatchers;
 
+import com.monopoly.dispatchers.definition.HttpCommandExecutionDefinition;
 import com.monopoly.http.HttpServerRequest;
 import com.monopoly.http.HttpServerResponse;
 import com.monopoly.http.controller.HttpController;
@@ -30,9 +31,9 @@ public class HttpCommandDispatcher implements HttpDispatcher, ApplicationContext
     private Map<String, String> params;
 
     /**
-     * Available controllers
+     * Command execution definitions
      */
-    private Map<String, String> controllers;
+    private Map<String, HttpCommandExecutionDefinition> definitions;
 
     /**
      * HTTP request
@@ -60,8 +61,8 @@ public class HttpCommandDispatcher implements HttpDispatcher, ApplicationContext
     }
 
     @Override
-    public void setControllers(Map<String, String> controllers) {
-        this.controllers = controllers;
+    public void setDefinitions(Map<String, HttpCommandExecutionDefinition> definitions) {
+        this.definitions = definitions;
     }
 
     @Override
@@ -74,18 +75,17 @@ public class HttpCommandDispatcher implements HttpDispatcher, ApplicationContext
         }
 
         String commandName = params.get("commandName");
-        if (!controllers.containsKey(commandName)) {
+        if (!definitions.containsKey(commandName)) {
             throw new InvalidHttpDispatcherException("Command with name \"" + commandName + "\" is not found");
         }
 
-        String controllerName = controllers.get(commandName);
-        HttpController controller = applicationContext.getBean(controllerName, HttpController.class);
+        HttpCommandExecutionDefinition definition = definitions.get(commandName);
+        HttpController controller = applicationContext.getBean(definition.getControllerName(), HttpController.class);
         controller.setRequest(this.request);
         controller.setResponse(this.response);
 
-        Class c = controller.getClass();
         try {
-            Method method = c.getMethod("index");
+            Method method = definition.getMethod();
             method.invoke(controller);
         } catch (Exception e) {
             System.out.println(e);

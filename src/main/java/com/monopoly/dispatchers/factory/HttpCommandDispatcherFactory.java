@@ -3,6 +3,7 @@ package com.monopoly.dispatchers.factory;
 import com.monopoly.annotations.CommandAction;
 import com.monopoly.annotations.controller.CommandController;
 import com.monopoly.dispatchers.HttpCommandDispatcher;
+import com.monopoly.dispatchers.definition.HttpCommandExecutionDefinition;
 import com.monopoly.http.dispatcher.AbstractHttpDispatcherFactory;
 import com.monopoly.http.dispatcher.HttpDispatcher;
 import com.monopoly.http.dispatcher.exception.InvalidHttpDispatcherException;
@@ -20,7 +21,7 @@ import java.util.Map;
 @Component
 public class HttpCommandDispatcherFactory extends AbstractHttpDispatcherFactory {
 
-    private final Map<String, String> controllers = new HashMap<String, String>();
+    private final Map<String, HttpCommandExecutionDefinition> definitions = new HashMap<String, HttpCommandExecutionDefinition>();
 
     @Override
     public void init() {
@@ -43,10 +44,15 @@ public class HttpCommandDispatcherFactory extends AbstractHttpDispatcherFactory 
                     CommandAction action = method.getAnnotation(CommandAction.class);
                     String commandName = action.value();
 
-                    if (controllers.containsKey(commandName)) {
+                    if (definitions.containsKey(commandName)) {
                         throw new RuntimeException("Controller for command \"" + commandName + "\" already registered");
                     }
-                    controllers.put(commandName, controllerName);
+
+                    HttpCommandExecutionDefinition definition = new HttpCommandExecutionDefinition();
+                    definition.setControllerName(controllerName);
+                    definition.setMethod(method);
+
+                    definitions.put(commandName, definition);
                 }
             }
         }
@@ -56,7 +62,7 @@ public class HttpCommandDispatcherFactory extends AbstractHttpDispatcherFactory 
     public HttpDispatcher getDispatcher(Map<String, String> params) throws InvalidHttpDispatcherException {
         HttpDispatcher dispatcher = applicationContext.getBean(HttpCommandDispatcher.class);
         dispatcher.setParams(params);
-        dispatcher.setControllers(controllers);
+        dispatcher.setDefinitions(definitions);
         return dispatcher;
     }
 

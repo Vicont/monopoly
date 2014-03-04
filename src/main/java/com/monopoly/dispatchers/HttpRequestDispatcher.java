@@ -1,5 +1,6 @@
 package com.monopoly.dispatchers;
 
+import com.monopoly.dispatchers.definition.HttpCommandExecutionDefinition;
 import com.monopoly.http.HttpServerRequest;
 import com.monopoly.http.HttpServerResponse;
 import com.monopoly.http.dispatcher.HttpDispatcher;
@@ -30,7 +31,7 @@ public class HttpRequestDispatcher implements HttpDispatcher, ApplicationContext
     /**
      * Available controllers
      */
-    private Map<String, String> controllers;
+    private Map<String, HttpCommandExecutionDefinition> controllers;
 
     /**
      * HTTP request
@@ -58,7 +59,7 @@ public class HttpRequestDispatcher implements HttpDispatcher, ApplicationContext
     }
 
     @Override
-    public void setControllers(Map<String, String> controllers) {
+    public void setDefinitions(Map<String, HttpCommandExecutionDefinition> controllers) {
         this.controllers = controllers;
     }
 
