@@ -2,6 +2,7 @@ package com.monopoly.dispatchers.factory;
 
 import com.monopoly.annotations.CommandAction;
 import com.monopoly.annotations.controller.CommandController;
+import com.monopoly.dispatchers.HttpCommandDispatcher;
 import com.monopoly.http.dispatcher.AbstractHttpDispatcherFactory;
 import com.monopoly.http.dispatcher.HttpDispatcher;
 import com.monopoly.http.dispatcher.exception.InvalidHttpDispatcherException;
@@ -53,17 +54,10 @@ public class HttpCommandDispatcherFactory extends AbstractHttpDispatcherFactory 
 
     @Override
     public HttpDispatcher getDispatcher(Map<String, String> params) throws InvalidHttpDispatcherException {
-        if (!params.containsKey("commandName")) {
-            throw new InvalidHttpDispatcherException("Parameter \"commandName\" is not found");
-        }
-
-        String commandName = params.get("commandName");
-        if (!controllers.containsKey(commandName)) {
-            throw new InvalidHttpDispatcherException("Command with name \"" + commandName + "\" is not found");
-        }
-
-        String controllerName = controllers.get(commandName);
-        return applicationContext.getBean(controllerName, HttpDispatcher.class);
+        HttpDispatcher dispatcher = applicationContext.getBean(HttpCommandDispatcher.class);
+        dispatcher.setParams(params);
+        dispatcher.setControllers(controllers);
+        return dispatcher;
     }
 
 }

@@ -1,8 +1,12 @@
 package com.monopoly.http.dispatcher;
 
 import com.monopoly.http.HttpServerRequest;
+import com.monopoly.http.HttpServerResponse;
 import com.monopoly.http.dispatcher.exception.HttpDispatcherNotFoundException;
 import com.monopoly.http.dispatcher.exception.InvalidHttpDispatcherException;
+import org.springframework.beans.BeansException;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +17,12 @@ import java.util.Map;
  *
  * @author vicont
  */
-public class Router {
+public class Router implements ApplicationContextAware {
+
+    /**
+     * Spring application context
+     */
+    private ApplicationContext applicationContext;
 
     /**
      * Route list
@@ -32,32 +41,30 @@ public class Router {
         }
     }
 
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+        this.applicationContext = applicationContext;
+    }
+
     /**
-     * Retrieve dispatcher which should handles request
+     * Route HTTP request
      *
      * @param request HTTP request
-     * @return Dispatcher
      * @throws HttpDispatcherNotFoundException
      * @throws InvalidHttpDispatcherException
      */
-    public HttpDispatcher getDispatcher(HttpServerRequest request) throws HttpDispatcherNotFoundException, InvalidHttpDispatcherException {
+    public void route (HttpServerRequest request, HttpServerResponse response) throws HttpDispatcherNotFoundException, InvalidHttpDispatcherException {
         String uri = request.getUri();
 
         for (ConstructedRoute constructedRoute : this.routes) {
             if (constructedRoute.matches(uri)) {
-                HttpDispatcher dispatcher;
-                Class dispatcherClass = constructedRoute.getDispatcher();
-
-                try {
-                    dispatcher = (HttpDispatcher) dispatcherClass.newInstance();
-                } catch (Exception e) {
-                    String message = "Dispatcher for request \"" + uri + "\" with class [" + dispatcherClass.getName() + "] is invalid";
-                    throw new InvalidHttpDispatcherException(message);
-                }
-
                 Map<String, String> params = constructedRoute.findParams(uri);
-                dispatcher.setParams(params);
-                return dispatcher;
+                Class<HttpDispatcherFactory> dispatcherFactoryClass = constructedRoute.getDispatcherFactoryClass();
+
+                HttpDispatcherFactory factory = applicationContext.getBean(dispatcherFactoryClass);
+                HttpDispatcher dispatcher = factory.getDispatcher(params);
+                dispatcher.process(request, response);
+                return;
             }
         }
 

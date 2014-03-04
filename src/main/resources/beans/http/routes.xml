@@ -8,11 +8,11 @@
             <list>
                 <bean class="com.monopoly.http.dispatcher.Route">
                     <property name="pattern" value="/cmd/:commandName" />
-                    <property name="dispatcher" value="com.monopoly.dispatchers.HttpCommandDispatcher" />
+                    <property name="dispatcherFactoryClass" value="com.monopoly.dispatchers.factory.HttpCommandDispatcherFactory" />
                 </bean>
                 <bean class="com.monopoly.http.dispatcher.Route">
                     <property name="pattern" value="/:controllerName/:actionName" />
-                    <property name="dispatcher" value="com.monopoly.dispatchers.HttpRequestDispatcher" />
+                    <property name="dispatcherFactoryClass" value="com.monopoly.dispatchers.factory.HttpCommandDispatcherFactory" />
                 </bean>
             </list>
         </constructor-arg>

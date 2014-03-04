@@ -31,6 +31,7 @@ abstract public class AbstractHttpDispatcherFactory implements HttpDispatcherFac
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
         this.beanFactory = beanFactory;
+        this.init();
     }
 
 }
