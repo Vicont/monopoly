@@ -60,10 +60,13 @@ public class Router implements ApplicationContextAware {
             if (constructedRoute.matches(uri)) {
                 Map<String, String> params = constructedRoute.findParams(uri);
                 Class<HttpDispatcherFactory> dispatcherFactoryClass = constructedRoute.getDispatcherFactoryClass();
-
                 HttpDispatcherFactory factory = applicationContext.getBean(dispatcherFactoryClass);
-                HttpDispatcher dispatcher = factory.getDispatcher(params);
-                dispatcher.process(request, response);
+
+                HttpDispatcher dispatcher = factory.getDispatcher();
+                dispatcher.setParams(params);
+                dispatcher.setRequest(request);
+                dispatcher.setResponse(response);
+                dispatcher.process();
                 return;
             }
         }

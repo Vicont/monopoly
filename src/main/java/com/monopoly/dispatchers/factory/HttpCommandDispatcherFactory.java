@@ -21,6 +21,9 @@ import java.util.Map;
 @Component
 public class HttpCommandDispatcherFactory extends AbstractHttpDispatcherFactory {
 
+    /**
+     * Command execution definitions
+     */
     private final Map<String, HttpCommandExecutionDefinition> definitions = new HashMap<String, HttpCommandExecutionDefinition>();
 
     @Override
@@ -59,9 +62,8 @@ public class HttpCommandDispatcherFactory extends AbstractHttpDispatcherFactory 
     }
 
     @Override
-    public HttpDispatcher getDispatcher(Map<String, String> params) throws InvalidHttpDispatcherException {
-        HttpDispatcher dispatcher = applicationContext.getBean(HttpCommandDispatcher.class);
-        dispatcher.setParams(params);
+    public HttpDispatcher getDispatcher() throws InvalidHttpDispatcherException {
+        HttpCommandDispatcher dispatcher = applicationContext.getBean(HttpCommandDispatcher.class);
         dispatcher.setDefinitions(definitions);
         return dispatcher;
     }
