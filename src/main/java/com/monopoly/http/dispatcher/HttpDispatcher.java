@@ -2,6 +2,8 @@ package com.monopoly.http.dispatcher;
 
 import com.monopoly.http.HttpServerRequest;
 import com.monopoly.http.HttpServerResponse;
+import com.monopoly.http.dispatcher.exception.HttpDispatcherNotFoundException;
+import com.monopoly.http.dispatcher.exception.InvalidHttpDispatcherException;
 
 import java.util.Map;
 
@@ -13,18 +15,32 @@ import java.util.Map;
 public interface HttpDispatcher {
 
     /**
+     * Set HTTP request object
+     *
+     * @param request HTTP request
+     */
+    void setRequest(HttpServerRequest request);
+
+    /**
+     * Set HTTP response object
+     *
+     * @param response HTTP response
+     */
+    void setResponse(HttpServerResponse response);
+
+    /**
      * Set additional params
      *
      * @param params Params map
      */
-    public void setParams(Map<String, String> params);
+    void setParams(Map<String, String> params);
 
     /**
      * Dispatch request
      *
-     * @param request Request object
-     * @param response Response object
+     * @throws HttpDispatcherNotFoundException
+     * @throws InvalidHttpDispatcherException
      */
-    public void process(HttpServerRequest request, HttpServerResponse response);
+    void process() throws HttpDispatcherNotFoundException, InvalidHttpDispatcherException;
 
 }

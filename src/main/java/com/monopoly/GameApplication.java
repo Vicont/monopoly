@@ -60,7 +60,7 @@ public class GameApplication implements Application {
         context.getEnvironment().setActiveProfiles(settings.base.environment());
         context.refresh();
 
-        Application app = context.getBean("application", Application.class);
+        Application app = context.getBean(Application.class);
         app.start();
 
         log.info("Application started");

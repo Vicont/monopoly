@@ -1,9 +1,14 @@
 package com.monopoly.dispatchers;
 
-import com.monopoly.http.HttpServerRequest;
-import com.monopoly.http.HttpServerResponse;
-import com.monopoly.http.dispatcher.HttpDispatcher;
+import com.monopoly.dispatchers.definition.HttpCommandExecutionDefinition;
+import com.monopoly.http.controller.HttpController;
+import com.monopoly.http.dispatcher.AbstractHttpDispatcher;
+import com.monopoly.http.dispatcher.exception.HttpDispatcherNotFoundException;
+import com.monopoly.http.dispatcher.exception.InvalidHttpDispatcherException;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
+import java.lang.reflect.Method;
 import java.util.Map;
 
 /**
@@ -11,36 +16,46 @@ import java.util.Map;
  *
  * @author vicont
  */
-public class HttpCommandDispatcher implements HttpDispatcher {
+@Component
+@Scope("prototype")
+public class HttpCommandDispatcher extends AbstractHttpDispatcher {
 
     /**
-     * Additional params
+     * Command execution definitions
      */
-    private Map<String, String> params;
+    private Map<String, HttpCommandExecutionDefinition> definitions;
 
     /**
-     * HTTP request
+     * Set execution definitions
+     *
+     * @param definitions Definitions map
      */
-    private HttpServerRequest request;
-
-    /**
-     * HTTP response
-     */
-    private HttpServerResponse response;
-
-    @Override
-    public void setParams(Map<String, String> params) {
-        this.params = params;
+    public void setDefinitions(Map<String, HttpCommandExecutionDefinition> definitions) {
+        this.definitions = definitions;
     }
 
     @Override
-    public void process(HttpServerRequest request, HttpServerResponse response) {
-        this.request = request;
-        this.response = response;
+    public void process() throws HttpDispatcherNotFoundException, InvalidHttpDispatcherException {
+        if (!params.containsKey("commandName")) {
+            throw new InvalidHttpDispatcherException("Parameter \"commandName\" is not found");
+        }
 
-        response.write("You've requested URI: " + request.getUri() + "\n");
-        response.write("Command: " + this.params.get("commandName") + "\n");
-        response.end();
+        String commandName = params.get("commandName");
+        if (!definitions.containsKey(commandName)) {
+            throw new InvalidHttpDispatcherException("Command with name \"" + commandName + "\" is not found");
+        }
+
+        HttpCommandExecutionDefinition definition = definitions.get(commandName);
+        HttpController controller = applicationContext.getBean(definition.getControllerName(), HttpController.class);
+        controller.setRequest(this.request);
+        controller.setResponse(this.response);
+
+        try {
+            Method method = definition.getMethod();
+            method.invoke(controller);
+        } catch (Exception e) {
+            System.out.println(e);
+        }
     }
 
 }

@@ -85,12 +85,12 @@ public class ConstructedRoute {
     }
 
     /**
-     * Retrieve a raw route
+     * Retrieve dispatcher factory class
      *
-     * @return Raw route
+     * @return Dispatcher factory
      */
-    public Class getDispatcher() {
-        return this.route.getDispatcher();
+    public Class<HttpDispatcherFactory> getDispatcherFactoryClass() {
+        return this.route.getDispatcherFactoryClass();
     }
 
 }

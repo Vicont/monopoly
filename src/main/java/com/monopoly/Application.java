@@ -10,18 +10,18 @@ public interface Application {
     /**
      * Start application
      */
-    public void start();
+    void start();
 
     /**
      * Stop application
      */
-    public void stop();
+    void stop();
 
     /**
      * Returns server settings
      *
      * @return Settings object
      */
-    public ServerSettings getSettings();
+    ServerSettings getSettings();
 
 }

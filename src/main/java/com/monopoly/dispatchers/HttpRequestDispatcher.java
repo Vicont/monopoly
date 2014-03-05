@@ -1,8 +1,11 @@
 package com.monopoly.dispatchers;
 
-import com.monopoly.http.HttpServerRequest;
-import com.monopoly.http.HttpServerResponse;
-import com.monopoly.http.dispatcher.HttpDispatcher;
+import com.monopoly.dispatchers.definition.HttpCommandExecutionDefinition;
+import com.monopoly.http.dispatcher.AbstractHttpDispatcher;
+import com.monopoly.http.dispatcher.exception.HttpDispatcherNotFoundException;
+import com.monopoly.http.dispatcher.exception.InvalidHttpDispatcherException;
+import org.springframework.context.annotation.Scope;
+import org.springframework.stereotype.Component;
 
 import java.util.Map;
 
@@ -11,33 +14,21 @@ import java.util.Map;
  *
  * @author vicont
  */
-public class HttpRequestDispatcher implements HttpDispatcher {
+@Component
+@Scope("prototype")
+public class HttpRequestDispatcher extends AbstractHttpDispatcher {
 
     /**
-     * Additional params
+     * Available controllers
      */
-    private Map<String, String> params;
+    private Map<String, HttpCommandExecutionDefinition> controllers;
 
-    /**
-     * HTTP request
-     */
-    private HttpServerRequest request;
-
-    /**
-     * HTTP response
-     */
-    private HttpServerResponse response;
-
-    @Override
-    public void setParams(Map<String, String> params) {
-        this.params = params;
+    public void setDefinitions(Map<String, HttpCommandExecutionDefinition> controllers) {
+        this.controllers = controllers;
     }
 
     @Override
-    public void process(HttpServerRequest request, HttpServerResponse response) {
-        this.request = request;
-        this.response = response;
-
+    public void process() throws HttpDispatcherNotFoundException, InvalidHttpDispatcherException {
         response.write("You've requested URI: " + request.getUri() + "\n");
         response.write("Controller: " + this.params.get("controllerName") + "\n");
         response.write("Action: " + this.params.get("actionName") + "\n");

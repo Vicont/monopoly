@@ -1,8 +1,7 @@
 package com.monopoly.http;
 
 import com.monopoly.ApplicationContextManager;
-import com.monopoly.http.dispatcher.HttpDispatcher;
-import com.monopoly.http.dispatcher.HttpDispatcherFactory;
+import com.monopoly.http.dispatcher.Router;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.DecoderResult;
@@ -90,9 +89,8 @@ public class HttpExchange {
 
             if (isGoodRequest) {
                 try {
-                    HttpDispatcherFactory factory = ApplicationContextManager.getContext().getBean("httpDispatcherFactory", HttpDispatcherFactory.class);
-                    HttpDispatcher dispatcher = factory.getDispatcher(this.request);
-                    dispatcher.process(this.request, this.response);
+                    Router router = ApplicationContextManager.getContext().getBean(Router.class);
+                    router.route(this.request, this.response);
                 } catch (Exception e) {
                     response.setStatus(INTERNAL_SERVER_ERROR);
                     response.write(e.toString() + "\n");
