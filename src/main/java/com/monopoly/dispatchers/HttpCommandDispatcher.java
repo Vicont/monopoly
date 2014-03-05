@@ -50,9 +50,20 @@ public class HttpCommandDispatcher extends AbstractHttpDispatcher {
         controller.setRequest(this.request);
         controller.setResponse(this.response);
 
+        Method actionMethod = definition.getActionMethod();
+        Method beforeMethod = definition.getBeforeMethod();
+        Method afterMethod = definition.getAfterMethod();
+
         try {
-            Method method = definition.getMethod();
-            method.invoke(controller);
+            if (beforeMethod != null) {
+                beforeMethod.invoke(controller);
+            }
+
+            actionMethod.invoke(controller);
+
+            if (afterMethod != null) {
+                afterMethod.invoke(controller);
+            }
         } catch (Exception e) {
             System.out.println(e);
         }

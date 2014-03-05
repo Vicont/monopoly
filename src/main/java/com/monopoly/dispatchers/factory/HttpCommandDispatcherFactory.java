@@ -1,5 +1,7 @@
 package com.monopoly.dispatchers.factory;
 
+import com.monopoly.annotations.After;
+import com.monopoly.annotations.Before;
 import com.monopoly.annotations.CommandAction;
 import com.monopoly.annotations.controller.CommandController;
 import com.monopoly.dispatchers.HttpCommandDispatcher;
@@ -41,6 +43,23 @@ public class HttpCommandDispatcherFactory extends AbstractHttpDispatcherFactory 
             }
 
             Method[] methods = controllerClass.getMethods();
+            Method beforeMethod = null;
+            Method afterMethod = null;
+
+            for (Method method : methods) {
+                if (method.isAnnotationPresent(Before.class)) {
+                    if (beforeMethod != null) {
+                        throw new RuntimeException("@Before method has already registered for \"" + className + "\"");
+                    }
+                    beforeMethod = method;
+                }
+                if (method.isAnnotationPresent(After.class)) {
+                    if (afterMethod != null) {
+                        throw new RuntimeException("@After method has already registered for \"" + className + "\"");
+                    }
+                    afterMethod = method;
+                }
+            }
 
             for (Method method : methods) {
                 if (method.isAnnotationPresent(CommandAction.class)) {
@@ -48,12 +67,14 @@ public class HttpCommandDispatcherFactory extends AbstractHttpDispatcherFactory 
                     String commandName = action.value();
 
                     if (definitions.containsKey(commandName)) {
-                        throw new RuntimeException("Controller for command \"" + commandName + "\" already registered");
+                        throw new RuntimeException("Controller for command \"" + commandName + "\" has already registered");
                     }
 
                     HttpCommandExecutionDefinition definition = new HttpCommandExecutionDefinition();
                     definition.setControllerName(controllerName);
-                    definition.setMethod(method);
+                    definition.setActionMethod(method);
+                    definition.setBeforeMethod(beforeMethod);
+                    definition.setAfterMethod(afterMethod);
 
                     definitions.put(commandName, definition);
                 }
