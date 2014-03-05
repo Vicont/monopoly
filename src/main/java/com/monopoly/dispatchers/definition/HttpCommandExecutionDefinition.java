@@ -15,6 +15,11 @@ public class HttpCommandExecutionDefinition {
     private String controllerName;
 
     /**
+     * Command structure
+     */
+    private Class structure;
+
+    /**
      * Action method
      */
     private Method actionMethod;
@@ -99,6 +104,24 @@ public class HttpCommandExecutionDefinition {
      */
     public void setAfterMethod(Method afterMethod) {
         this.afterMethod = afterMethod;
+    }
+
+    /**
+     * Retrieve command structure class
+     *
+     * @return Class
+     */
+    public Class getStructure() {
+        return structure;
+    }
+
+    /**
+     * Set command structure class
+     *
+     * @param structure Class
+     */
+    public void setStructure(Class structure) {
+        this.structure = structure;
     }
 
 }

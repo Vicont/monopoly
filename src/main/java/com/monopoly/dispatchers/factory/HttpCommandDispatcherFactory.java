@@ -3,6 +3,7 @@ package com.monopoly.dispatchers.factory;
 import com.monopoly.annotations.After;
 import com.monopoly.annotations.Before;
 import com.monopoly.annotations.CommandAction;
+import com.monopoly.annotations.command.IncomingCommand;
 import com.monopoly.annotations.controller.CommandController;
 import com.monopoly.dispatchers.HttpCommandDispatcher;
 import com.monopoly.dispatchers.definition.HttpCommandExecutionDefinition;
@@ -31,6 +32,7 @@ public class HttpCommandDispatcherFactory extends AbstractHttpDispatcherFactory 
     @Override
     public void init() {
         String[] names = this.beanFactory.getBeanNamesForAnnotation(CommandController.class);
+        Map<String, Class> structures = this.findCommandStructures();
 
         for (String controllerName : names) {
             String className = this.beanFactory.getBeanDefinition(controllerName).getBeanClassName();
@@ -70,7 +72,12 @@ public class HttpCommandDispatcherFactory extends AbstractHttpDispatcherFactory 
                         throw new RuntimeException("Controller for command \"" + commandName + "\" has already registered");
                     }
 
+                    if (!structures.containsKey(commandName)) {
+                        throw new RuntimeException("Structure for command \"" + commandName + "\" is not found");
+                    }
+
                     HttpCommandExecutionDefinition definition = new HttpCommandExecutionDefinition();
+                    definition.setStructure(structures.get(commandName));
                     definition.setControllerName(controllerName);
                     definition.setActionMethod(method);
                     definition.setBeforeMethod(beforeMethod);
@@ -80,6 +87,32 @@ public class HttpCommandDispatcherFactory extends AbstractHttpDispatcherFactory 
                 }
             }
         }
+    }
+
+    private Map<String, Class> findCommandStructures() {
+        Map<String, Class> commands = new HashMap<String, Class>();
+        String[] names = this.beanFactory.getBeanNamesForAnnotation(IncomingCommand.class);
+
+        for (String structureBeanName : names) {
+            String className = this.beanFactory.getBeanDefinition(structureBeanName).getBeanClassName();
+            Class commandStructure;
+
+            try {
+                commandStructure = Class.forName(className);
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException("Command class \"" + className + "\" is not found");
+            }
+
+            String commandName = commandStructure.getSimpleName();
+
+            if (commands.containsKey(commandName)) {
+                throw new RuntimeException("Structure for command \"" + commandName + "\" has already registered");
+            }
+
+            commands.put(commandName, commandStructure);
+        }
+
+        return commands;
     }
 
     @Override

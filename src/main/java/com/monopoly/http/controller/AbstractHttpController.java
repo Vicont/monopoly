@@ -20,6 +20,7 @@ abstract public class AbstractHttpController implements HttpController {
      */
     protected HttpServerResponse response;
 
+
     @Override
     public void setRequest(HttpServerRequest request) {
         this.request = request;
