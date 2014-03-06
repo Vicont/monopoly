@@ -8,13 +8,18 @@ package com.monopoly.http.controller;
 abstract public class AbstractHttpCommandController extends AbstractHttpController implements HttpCommandController {
 
     /**
-     * Command data
+     * Request command
      */
-    protected Object command;
+    protected Object requestCommand;
 
     @Override
-    public void setCommand(Object command) {
-        this.command = command;
+    public void setRequestCommand(Object command) {
+        this.requestCommand = command;
+    }
+
+    @Override
+    public Object getRequestCommand() {
+        return this.requestCommand;
     }
 
 }

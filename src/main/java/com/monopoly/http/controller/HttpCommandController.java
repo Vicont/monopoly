@@ -8,10 +8,17 @@ package com.monopoly.http.controller;
 public interface HttpCommandController extends HttpController {
 
     /**
-     * Set command data
+     * Set request command data
      *
      * @param command Data
      */
-    void setCommand(Object command);
+    void setRequestCommand(Object command);
+
+    /**
+     * Retrieve request command
+     *
+     * @return Command
+     */
+    Object getRequestCommand();
 
 }

@@ -58,19 +58,20 @@ public class HttpCommandDispatcher extends AbstractHttpDispatcher {
         }
 
         HttpCommandExecutionDefinition definition = definitions.get(commandName);
-        Object command;
+        Object requestCommand;
+        Object responseCommand;
 
         try {
-            command = this.parseCommand(definition.getStructure());
+            requestCommand = this.parseCommand(definition.getStructure());
         } catch (Exception e) {
-            this.createErrorResponse(e);
+            this.createErrorResponse("Error while decoding request: " + e);
             return;
         }
 
         HttpCommandController controller = applicationContext.getBean(definition.getControllerName(), HttpCommandController.class);
         controller.setRequest(this.request);
         controller.setResponse(this.response);
-        controller.setCommand(command);
+        controller.setRequestCommand(requestCommand);
 
         Method actionMethod = definition.getActionMethod();
         Method beforeMethod = definition.getBeforeMethod();
@@ -81,14 +82,17 @@ public class HttpCommandDispatcher extends AbstractHttpDispatcher {
                 beforeMethod.invoke(controller);
             }
 
-            actionMethod.invoke(controller);
+            responseCommand = actionMethod.invoke(controller);
 
             if (afterMethod != null) {
                 afterMethod.invoke(controller);
             }
         } catch (Exception e) {
             this.createErrorResponse(e);
+            return;
         }
+
+        this.createResponse(responseCommand);
     }
 
     /**
@@ -105,12 +109,38 @@ public class HttpCommandDispatcher extends AbstractHttpDispatcher {
     }
 
     /**
+     * Create success response
+     *
+     * @param data Response data
+     */
+    private void createResponse(Object data) {
+        ObjectMapper mapper = new ObjectMapper();
+        SuccessOutgoingCommand command = new SuccessOutgoingCommand();
+        command.setData(data);
+
+        if (!this.response.isSent()) {
+            String output;
+
+            try {
+                output = mapper.writeValueAsString(command);
+                this.response.setHeader(HttpHeaders.Names.CONTENT_TYPE, "application/json");
+                this.response.end(output);
+                this.log("RESPONSE", output);
+            } catch (Exception e) {
+                this.log("ERROR", "Error while encoding response: " + e.getMessage());
+            }
+        } else {
+            this.log("ERROR", "Response has already sent");
+        }
+    }
+
+    /**
      * Create error response caused by exception
      *
      * @param e Exception
      */
     private void createErrorResponse(Throwable e) {
-        String message = String.valueOf(e) + ": ";
+        String message = e + ": ";
 
         if (e.getMessage() != null) {
             message += e.getMessage();
@@ -175,6 +205,15 @@ class ErrorOutgoingCommand {
     private String error = "";
 
     /**
+     * Result flag (always false)
+     *
+     * @return Result flag
+     */
+    public boolean getSuccess() {
+        return false;
+    }
+
+    /**
      * Retrieve error message
      *
      * @return Message
@@ -192,13 +231,43 @@ class ErrorOutgoingCommand {
         this.error = error;
     }
 
+}
+
+/**
+ * Command structure for success response
+ */
+class SuccessOutgoingCommand {
+
     /**
-     * Result flag (always false)
+     * Command data
+     */
+    private Object data;
+
+    /**
+     * Result flag (always true)
      *
      * @return Result flag
      */
     public boolean getSuccess() {
-        return false;
+        return true;
+    }
+
+    /**
+     * Retrieve command data
+     *
+     * @return Data object
+     */
+    public Object getData() {
+        return data;
+    }
+
+    /**
+     * Set command data
+     *
+     * @param data Data object
+     */
+    public void setData(Object data) {
+        this.data = data;
     }
 
 }

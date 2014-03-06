@@ -17,20 +17,19 @@ public class DebugController extends AbstractHttpCommandController {
 
     @Before
     public void sayHello() {
-        response.write("Hello\n");
+        //response.write("Hello\n");
     }
 
     @CommandAction("Debug")
-    public void index() {
-        Debug command = (Debug) this.command;
-        System.out.println(command.toString());
-        response.write("You've requested URI: " + request.getUri() + "\n");
-        response.end();
+    public Object index() {
+        Debug requestCommand = (Debug) this.getRequestCommand();
+        System.out.println(requestCommand.toString());
+        return new DebugController();
     }
 
     @After
     public void sayGoodBye() {
-        throw new RuntimeException("Good bye");
+        //throw new RuntimeException("Good bye");
     }
 
 }
