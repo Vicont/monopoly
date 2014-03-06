@@ -4,13 +4,13 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.monopoly.dispatchers.definition.HttpCommandExecutionDefinition;
 import com.monopoly.http.controller.HttpCommandController;
 import com.monopoly.http.dispatcher.AbstractHttpDispatcher;
-import com.monopoly.http.dispatcher.exception.HttpDispatcherNotFoundException;
-import com.monopoly.http.dispatcher.exception.InvalidHttpDispatcherException;
+import io.netty.handler.codec.http.HttpHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.Map;
 
@@ -43,18 +43,27 @@ public class HttpCommandDispatcher extends AbstractHttpDispatcher {
     }
 
     @Override
-    public void process() throws HttpDispatcherNotFoundException, InvalidHttpDispatcherException {
+    public void process() {
         if (!params.containsKey("commandName")) {
-            throw new InvalidHttpDispatcherException("Parameter \"commandName\" is not found");
+            this.createErrorResponse("Parameter \"commandName\" is not found");
+            return;
         }
 
         String commandName = params.get("commandName");
         if (!definitions.containsKey(commandName)) {
-            throw new InvalidHttpDispatcherException("Command with name \"" + commandName + "\" is not found");
+            this.createErrorResponse("Command with name \"" + commandName + "\" is not found");
+            return;
         }
 
         HttpCommandExecutionDefinition definition = definitions.get(commandName);
-        Object command = this.parseCommand(definition.getStructure());
+        Object command;
+
+        try {
+            command = this.parseCommand(definition.getStructure());
+        } catch (Exception e) {
+            this.createErrorResponse(e);
+            return;
+        }
 
         HttpCommandController controller = applicationContext.getBean(definition.getControllerName(), HttpCommandController.class);
         controller.setRequest(this.request);
@@ -76,22 +85,103 @@ public class HttpCommandDispatcher extends AbstractHttpDispatcher {
                 afterMethod.invoke(controller);
             }
         } catch (Exception e) {
-            e.printStackTrace();
+            this.createErrorResponse(e);
         }
     }
 
-    private Object parseCommand(Class structure) {
+    /**
+     * Parse command from request
+     *
+     * @param structure Command structure
+     * @return Command
+     * @throws Exception
+     */
+    private Object parseCommand(Class structure) throws Exception {
         String body = this.request.getBody();
         ObjectMapper mapper = new ObjectMapper();
-        Object command = null;
+        return mapper.readValue(body, structure);
+    }
 
-        try {
-            command = mapper.readValue(body, structure);
-        } catch (Exception e) {
-            e.printStackTrace();
+    /**
+     * Create error response caused by exception
+     *
+     * @param e Exception
+     */
+    private void createErrorResponse(Throwable e) {
+        String message = String.valueOf(e) + ": ";
+
+        if (e.getMessage() != null) {
+            message += e.getMessage();
+        } else {
+            if (e instanceof InvocationTargetException) {
+                Throwable te = ((InvocationTargetException) e).getTargetException();
+                message += te.getMessage();
+            }
         }
 
-        return command;
+        this.createErrorResponse(message);
+    }
+
+    /**
+     * Create error response with message
+     *
+     * @param message Message
+     */
+    private void createErrorResponse(String message) {
+        ErrorOutgoingCommand command = new ErrorOutgoingCommand();
+        command.setError(message);
+        ObjectMapper mapper = new ObjectMapper();
+
+        if (!this.response.isSent()) {
+            try {
+                String output = mapper.writeValueAsString(command);
+                this.response.setHeader(HttpHeaders.Names.CONTENT_TYPE, "application/json");
+                this.response.end(output);
+            } catch (Exception e) {
+                this.response.end(e.getMessage());
+            }
+        } else {
+            log.error(message);
+        }
+    }
+
+}
+
+/**
+ * Command structure for error response
+ */
+class ErrorOutgoingCommand {
+
+    /**
+     * Error message
+     */
+    private String error = "";
+
+    /**
+     * Retrieve error message
+     *
+     * @return Message
+     */
+    public String getError() {
+        return error;
+    }
+
+    /**
+     * Set error message
+     *
+     * @param error Message
+     */
+    public void setError(String error) {
+        this.error = error;
+    }
+
+    /**
+     * Result flag (always false)
+     *
+     * @return Result flag
+     */
+    public boolean getSuccess() {
+        return false;
     }
 
 }

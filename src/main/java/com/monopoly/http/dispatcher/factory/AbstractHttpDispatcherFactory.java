@@ -1,5 +1,8 @@
-package com.monopoly.http.dispatcher;
+package com.monopoly.http.dispatcher.factory;
 
+import com.monopoly.http.dispatcher.factory.exception.HttpDispatcherFactoryInitializationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.config.BeanFactoryPostProcessor;
 import org.springframework.beans.factory.config.ConfigurableListableBeanFactory;
@@ -31,7 +34,12 @@ abstract public class AbstractHttpDispatcherFactory implements HttpDispatcherFac
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) throws BeansException {
         this.beanFactory = beanFactory;
-        this.init();
+        try {
+            this.init();
+        } catch (HttpDispatcherFactoryInitializationException e) {
+            Logger log = LoggerFactory.getLogger(this.getClass());
+            log.error("Dispatcher factory initialization error: ", e);
+        }
     }
 
 }

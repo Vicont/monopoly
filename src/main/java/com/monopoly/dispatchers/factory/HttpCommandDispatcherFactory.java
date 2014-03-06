@@ -7,9 +7,9 @@ import com.monopoly.annotations.command.IncomingCommand;
 import com.monopoly.annotations.controller.CommandController;
 import com.monopoly.dispatchers.HttpCommandDispatcher;
 import com.monopoly.dispatchers.definition.HttpCommandExecutionDefinition;
-import com.monopoly.http.dispatcher.AbstractHttpDispatcherFactory;
+import com.monopoly.http.dispatcher.factory.AbstractHttpDispatcherFactory;
 import com.monopoly.http.dispatcher.HttpDispatcher;
-import com.monopoly.http.dispatcher.exception.InvalidHttpDispatcherException;
+import com.monopoly.http.dispatcher.factory.exception.HttpDispatcherFactoryInitializationException;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
@@ -30,7 +30,7 @@ public class HttpCommandDispatcherFactory extends AbstractHttpDispatcherFactory 
     private final Map<String, HttpCommandExecutionDefinition> definitions = new HashMap<String, HttpCommandExecutionDefinition>();
 
     @Override
-    public void init() {
+    public void init() throws HttpDispatcherFactoryInitializationException {
         String[] names = this.beanFactory.getBeanNamesForAnnotation(CommandController.class);
         Map<String, Class> structures = this.findCommandStructures();
 
@@ -41,7 +41,7 @@ public class HttpCommandDispatcherFactory extends AbstractHttpDispatcherFactory 
             try {
                 controllerClass = Class.forName(className);
             } catch (ClassNotFoundException e) {
-                throw new RuntimeException("Controller class \"" + className + "\" is not found");
+                throw new HttpDispatcherFactoryInitializationException("Controller with name \"" + className + "\" is not found");
             }
 
             Method[] methods = controllerClass.getMethods();
@@ -51,13 +51,13 @@ public class HttpCommandDispatcherFactory extends AbstractHttpDispatcherFactory 
             for (Method method : methods) {
                 if (method.isAnnotationPresent(Before.class)) {
                     if (beforeMethod != null) {
-                        throw new RuntimeException("@Before method has already registered for \"" + className + "\"");
+                        throw new HttpDispatcherFactoryInitializationException("@Before method has already registered for \"" + className + "\"");
                     }
                     beforeMethod = method;
                 }
                 if (method.isAnnotationPresent(After.class)) {
                     if (afterMethod != null) {
-                        throw new RuntimeException("@After method has already registered for \"" + className + "\"");
+                        throw new HttpDispatcherFactoryInitializationException("@After method has already registered for \"" + className + "\"");
                     }
                     afterMethod = method;
                 }
@@ -69,11 +69,11 @@ public class HttpCommandDispatcherFactory extends AbstractHttpDispatcherFactory 
                     String commandName = action.value();
 
                     if (definitions.containsKey(commandName)) {
-                        throw new RuntimeException("Controller for command \"" + commandName + "\" has already registered");
+                        throw new HttpDispatcherFactoryInitializationException("Controller for command \"" + commandName + "\" has already registered");
                     }
 
                     if (!structures.containsKey(commandName)) {
-                        throw new RuntimeException("Structure for command \"" + commandName + "\" is not found");
+                        throw new HttpDispatcherFactoryInitializationException("Structure for command \"" + commandName + "\" is not found");
                     }
 
                     HttpCommandExecutionDefinition definition = new HttpCommandExecutionDefinition();
@@ -89,7 +89,13 @@ public class HttpCommandDispatcherFactory extends AbstractHttpDispatcherFactory 
         }
     }
 
-    private Map<String, Class> findCommandStructures() {
+    /**
+     * Find command structures
+     *
+     * @return Structures map
+     * @throws HttpDispatcherFactoryInitializationException
+     */
+    private Map<String, Class> findCommandStructures() throws HttpDispatcherFactoryInitializationException {
         Map<String, Class> commands = new HashMap<String, Class>();
         String[] names = this.beanFactory.getBeanNamesForAnnotation(IncomingCommand.class);
 
@@ -100,13 +106,13 @@ public class HttpCommandDispatcherFactory extends AbstractHttpDispatcherFactory 
             try {
                 commandStructure = Class.forName(className);
             } catch (ClassNotFoundException e) {
-                throw new RuntimeException("Command class \"" + className + "\" is not found");
+                throw new HttpDispatcherFactoryInitializationException("Structure with name \"" + className + "\" is not found");
             }
 
             String commandName = commandStructure.getSimpleName();
 
             if (commands.containsKey(commandName)) {
-                throw new RuntimeException("Structure for command \"" + commandName + "\" has already registered");
+                throw new HttpDispatcherFactoryInitializationException("Structure for command \"" + commandName + "\" has already registered");
             }
 
             commands.put(commandName, commandStructure);
@@ -116,7 +122,7 @@ public class HttpCommandDispatcherFactory extends AbstractHttpDispatcherFactory 
     }
 
     @Override
-    public HttpDispatcher getDispatcher() throws InvalidHttpDispatcherException {
+    public HttpDispatcher getDispatcher() {
         HttpCommandDispatcher dispatcher = applicationContext.getBean(HttpCommandDispatcher.class);
         dispatcher.setDefinitions(definitions);
         return dispatcher;

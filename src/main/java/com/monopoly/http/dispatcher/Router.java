@@ -2,8 +2,8 @@ package com.monopoly.http.dispatcher;
 
 import com.monopoly.http.HttpServerRequest;
 import com.monopoly.http.HttpServerResponse;
-import com.monopoly.http.dispatcher.exception.HttpDispatcherNotFoundException;
-import com.monopoly.http.dispatcher.exception.InvalidHttpDispatcherException;
+import com.monopoly.http.dispatcher.exception.RouteNotFoundException;
+import com.monopoly.http.dispatcher.factory.HttpDispatcherFactory;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -50,10 +50,9 @@ public class Router implements ApplicationContextAware {
      * Route HTTP request
      *
      * @param request HTTP request
-     * @throws HttpDispatcherNotFoundException
-     * @throws InvalidHttpDispatcherException
+     * @throws RouteNotFoundException
      */
-    public void route (HttpServerRequest request, HttpServerResponse response) throws HttpDispatcherNotFoundException, InvalidHttpDispatcherException {
+    public void route (HttpServerRequest request, HttpServerResponse response) throws RouteNotFoundException {
         String uri = request.getUri();
 
         for (ConstructedRoute constructedRoute : this.routes) {
@@ -71,7 +70,7 @@ public class Router implements ApplicationContextAware {
             }
         }
 
-        throw new HttpDispatcherNotFoundException("Dispatcher for request \"" + uri + "\" is not found");
+        throw new RouteNotFoundException("Route for request \"" + uri + "\" is not found");
     }
 
 }

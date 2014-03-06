@@ -45,6 +45,11 @@ public class HttpServerResponse {
     private boolean hasContent = false;
 
     /**
+     * True if response has already sent
+     */
+    private boolean isSent = false;
+
+    /**
      * Response charset
      */
     private Charset charset = CharsetUtil.UTF_8;
@@ -100,11 +105,24 @@ public class HttpServerResponse {
     }
 
     /**
+     * True if response has already sent
+     *
+     * @return Is sent
+     */
+    public boolean isSent() {
+        return this.isSent;
+    }
+
+    /**
      * Write content
      *
      * @param content Content
      */
     public void write(String content) {
+        if (this.isSent) {
+            throw new RuntimeException("HTTP response is already sent");
+        }
+
         this.hasContent = true;
         this.output.writeBytes(content.getBytes(this.charset));
     }
@@ -119,9 +137,23 @@ public class HttpServerResponse {
     }
 
     /**
+     * Set response header
+     *
+     * @param name Header name
+     * @param value Header value
+     */
+    public void setHeader(String name, Object value) {
+        this.res.headers().set(name, value);
+    }
+
+    /**
      * Stop writing response and send it to client
      */
     public void end() {
+        if (this.isSent) {
+            throw new RuntimeException("HTTP response is already sent");
+        }
+
         if (this.hasContent) {
             this.res.headers().set(CONTENT_TYPE, "text/plain; charset=UTF-8");
 
@@ -132,6 +164,7 @@ public class HttpServerResponse {
         }
 
         ChannelFuture f = ctx.write(this.res);
+        this.isSent = true;
 
         if (!this.isKeepAlive) {
             f.addListener(ChannelFutureListener.CLOSE);

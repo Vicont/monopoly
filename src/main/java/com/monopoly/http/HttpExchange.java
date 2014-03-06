@@ -88,20 +88,19 @@ public class HttpExchange {
             response = new HttpServerResponse(this.context, status, this.request.isKeepAlive());
 
             if (isGoodRequest) {
+                for (Map.Entry<String, Cookie> entry : this.request.getCookies().entrySet()) {
+                    response.setCookie(entry.getValue());
+                }
+
                 try {
                     Router router = ApplicationContextManager.getContext().getBean(Router.class);
                     router.route(this.request, this.response);
                 } catch (Exception e) {
                     response.setStatus(INTERNAL_SERVER_ERROR);
                     response.write(e.toString() + "\n");
-                }
-
-                for (Map.Entry<String, Cookie> entry : this.request.getCookies().entrySet()) {
-                    response.setCookie(entry.getValue());
+                    response.end();
                 }
             }
-
-            response.end();
         }
     }
 

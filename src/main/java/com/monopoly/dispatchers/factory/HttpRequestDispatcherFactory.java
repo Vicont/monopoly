@@ -2,9 +2,8 @@ package com.monopoly.dispatchers.factory;
 
 import com.monopoly.dispatchers.HttpRequestDispatcher;
 import com.monopoly.dispatchers.definition.HttpCommandExecutionDefinition;
-import com.monopoly.http.dispatcher.AbstractHttpDispatcherFactory;
+import com.monopoly.http.dispatcher.factory.AbstractHttpDispatcherFactory;
 import com.monopoly.http.dispatcher.HttpDispatcher;
-import com.monopoly.http.dispatcher.exception.InvalidHttpDispatcherException;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
@@ -26,7 +25,7 @@ public class HttpRequestDispatcherFactory extends AbstractHttpDispatcherFactory 
     }
 
     @Override
-    public HttpDispatcher getDispatcher() throws InvalidHttpDispatcherException {
+    public HttpDispatcher getDispatcher() {
         HttpRequestDispatcher dispatcher = applicationContext.getBean(HttpRequestDispatcher.class);
         dispatcher.setDefinitions(definitions);
         return dispatcher;

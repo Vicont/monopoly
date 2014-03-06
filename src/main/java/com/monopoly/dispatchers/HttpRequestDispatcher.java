@@ -2,8 +2,6 @@ package com.monopoly.dispatchers;
 
 import com.monopoly.dispatchers.definition.HttpCommandExecutionDefinition;
 import com.monopoly.http.dispatcher.AbstractHttpDispatcher;
-import com.monopoly.http.dispatcher.exception.HttpDispatcherNotFoundException;
-import com.monopoly.http.dispatcher.exception.InvalidHttpDispatcherException;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
@@ -28,7 +26,7 @@ public class HttpRequestDispatcher extends AbstractHttpDispatcher {
     }
 
     @Override
-    public void process() throws HttpDispatcherNotFoundException, InvalidHttpDispatcherException {
+    public void process() {
         response.write("You've requested URI: " + request.getUri() + "\n");
         response.write("Controller: " + this.params.get("controllerName") + "\n");
         response.write("Action: " + this.params.get("actionName") + "\n");
