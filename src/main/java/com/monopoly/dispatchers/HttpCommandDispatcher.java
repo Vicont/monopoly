@@ -26,7 +26,7 @@ public class HttpCommandDispatcher extends AbstractHttpDispatcher {
     /**
      * Logger
      */
-    private static final Logger log = LoggerFactory.getLogger(HttpCommandDispatcher.class);
+    private static final Logger log = LoggerFactory.getLogger("http-protocol-command");
 
     /**
      * Command execution definitions
@@ -44,6 +44,8 @@ public class HttpCommandDispatcher extends AbstractHttpDispatcher {
 
     @Override
     public void process() {
+        this.log("REQUEST", this.request.getBody());
+
         if (!params.containsKey("commandName")) {
             this.createErrorResponse("Parameter \"commandName\" is not found");
             return;
@@ -133,16 +135,31 @@ public class HttpCommandDispatcher extends AbstractHttpDispatcher {
         ObjectMapper mapper = new ObjectMapper();
 
         if (!this.response.isSent()) {
+            String output;
+
             try {
-                String output = mapper.writeValueAsString(command);
+                output = mapper.writeValueAsString(command);
                 this.response.setHeader(HttpHeaders.Names.CONTENT_TYPE, "application/json");
-                this.response.end(output);
             } catch (Exception e) {
-                this.response.end(e.getMessage());
+                output = e.getMessage();
             }
+
+            this.log("ERROR RESPONSE", output);
+            this.response.end(output);
         } else {
-            log.error(message);
+            this.log("ERROR", message);
         }
+    }
+
+    /**
+     * Log protocol
+     *
+     * @param marker Marker
+     * @param message Message
+     */
+    private void log(String marker, String message) {
+        String fixMarker = String.format("%1$-9s", marker).substring(0, 9);
+        log.info(fixMarker + " [" + Integer.toHexString(hashCode()) + "]: " + message);
     }
 
 }

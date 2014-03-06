@@ -30,8 +30,7 @@ public class DebugController extends AbstractHttpCommandController {
 
     @After
     public void sayGoodBye() {
-        throw new RuntimeException("zzz");
-        //System.out.println("Good bye");
+        throw new RuntimeException("Good bye");
     }
 
 }
