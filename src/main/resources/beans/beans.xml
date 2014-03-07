@@ -4,12 +4,12 @@
        xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
-    <context:component-scan base-package="com.monopoly" name-generator="com.monopoly.ApplicationBeanNameGenerator" />
+    <context:component-scan base-package="com.snvent" name-generator="com.snvent.core.ApplicationBeanNameGenerator" />
 
     <import resource="property-placeholder.xml" />
     <import resource="http/routes.xml" />
 
-    <bean id="application" class="com.monopoly.GameApplication">
+    <bean id="application" class="com.snvent.core.GameApplication">
         <property name="services">
             <list>
                 <ref bean="httpService" />
@@ -18,19 +18,19 @@
         </property>
     </bean>
 
-    <bean id="httpService" class="com.monopoly.service.HttpService">
+    <bean id="httpService" class="com.snvent.core.service.HttpService">
         <property name="application" ref="application" />
         <property name="host" value="${http.server.host}" />
         <property name="port" value="${http.server.port}" />
     </bean>
 
-    <bean id="webSocketService" class="com.monopoly.service.WebSocketService">
+    <bean id="webSocketService" class="com.snvent.core.service.WebSocketService">
         <property name="application" ref="application" />
         <property name="host" value="${websocket.server.host}" />
         <property name="port" value="${websocket.server.port}" />
     </bean>
 
-    <bean class="com.monopoly.http.dispatcher.Router">
+    <bean class="com.snvent.core.http.route.Router">
         <constructor-arg ref="routes" />
     </bean>
 
