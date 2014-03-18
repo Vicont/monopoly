@@ -1,7 +1,6 @@
 package com.snvent.core.http.route;
 
 import com.snvent.core.http.dispatcher.factory.HttpDispatcherFactory;
-import com.snvent.core.http.route.Route;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -92,7 +91,7 @@ public class ConstructedRoute {
      *
      * @return Dispatcher factory
      */
-    public Class<HttpDispatcherFactory> getDispatcherFactoryClass() {
+    public Class<? extends HttpDispatcherFactory> getDispatcherFactoryClass() {
         return this.route.getDispatcherFactoryClass();
     }
 

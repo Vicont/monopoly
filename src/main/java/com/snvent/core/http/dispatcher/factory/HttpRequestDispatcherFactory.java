@@ -1,8 +1,8 @@
 package com.snvent.core.http.dispatcher.factory;
 
+import com.snvent.core.http.dispatcher.HttpDispatcher;
 import com.snvent.core.http.dispatcher.HttpRequestDispatcher;
 import com.snvent.core.http.dispatcher.definition.HttpCommandExecutionDefinition;
-import com.snvent.core.http.dispatcher.HttpDispatcher;
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;

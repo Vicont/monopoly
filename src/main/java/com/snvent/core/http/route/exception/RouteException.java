@@ -5,9 +5,9 @@ package com.snvent.core.http.route.exception;
  *
  * @author vicont
  */
-public class RouteNotFoundException extends RouteException {
+public class RouteException extends Exception {
 
-    public RouteNotFoundException(String message) {
+    public RouteException(String message) {
         super(message);
     }
 

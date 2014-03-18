@@ -34,6 +34,7 @@
     <orderEntry type="library" name="Maven: org.springframework:spring-core:4.0.0.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: commons-logging:commons-logging:1.1.1" level="project" />
     <orderEntry type="library" name="Maven: org.springframework:spring-expression:4.0.0.RELEASE" level="project" />
+    <orderEntry type="library" name="Maven: org.springframework:spring-test:4.0.0.RELEASE" level="project" />
     <orderEntry type="library" name="Maven: io.netty:netty-all:4.0.15.Final" level="project" />
     <orderEntry type="library" name="Maven: org.aeonbits.owner:owner:1.0.5" level="project" />
     <orderEntry type="library" name="Maven: com.corundumstudio.socketio:netty-socketio:1.6.2" level="project" />

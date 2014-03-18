@@ -1,58 +1,74 @@
 package com.snvent.core.http.route;
 
-import com.snvent.core.http.route.Router;
+import com.snvent.core.http.HttpServerRequest;
+import com.snvent.core.http.HttpServerResponse;
+import com.snvent.core.http.route.exception.InvalidDispatcherFactoryException;
+import com.snvent.core.http.route.exception.RouteException;
+import com.snvent.core.http.route.exception.RouteNotFoundException;
+import org.junit.Before;
+import org.junit.Test;
+import org.junit.runner.RunWith;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.ApplicationContextAware;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 /**
  * RouterTest
  *
  * @author vicont
  */
-public class RouterTest {
+
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(locations = {"classpath:/beans/beans.xml"})
+public class RouterTest implements ApplicationContextAware {
+
+    protected ApplicationContext applicationContext;
+
+    @Override
+    public final void setApplicationContext(final ApplicationContext applicationContext) {
+        this.applicationContext = applicationContext;
+    }
 
     /**
-     * router
+     * Router
      */
     private Router router;
 
-    /*@Before
+    @Before
     public void setUp() {
-        Route route;
-        List<Route> routes = new ArrayList<Route>();
+        this.router = this.applicationContext.getBean(Router.class);
+    }
 
-        route = new Route();
-        route.setPattern("/someUri/:foo");
-        route.setDispatcher(HttpDispatcher.class);
-        routes.add(route);
-
-        route = new Route();
-        route.setPattern("/:foo/:bar");
-        route.setDispatcher(HttpCommandDispatcher.class);
-        routes.add(route);
-
-        this.router = new Router(routes);
-    }*/
-
-    /*@Test(expected = HttpDispatcherNotFoundException.class)
-    public void testGetDispatcherWithUnroutableUri() throws HttpDispatcherNotFoundException, InvalidHttpDispatcherException {
+    @Test(expected = RouteNotFoundException.class)
+    public void testRouteRequestWithUnroutableUri() throws RouteException {
         HttpServerRequest request = mock(HttpServerRequest.class);
         when(request.getUri()).thenReturn("/foo");
-        this.router.getDispatcher(request);
-    }*/
+        HttpServerResponse response = mock(HttpServerResponse.class);
 
-    /*@Test(expected = InvalidHttpDispatcherException.class)
-    public void testGetInvalidDispatcher() throws HttpDispatcherNotFoundException, InvalidHttpDispatcherException {
+        this.router.route(request, response);
+    }
+
+    @Test(expected = InvalidDispatcherFactoryException.class)
+    public void testRouteWithInvalidDispatcher() throws RouteException {
         HttpServerRequest request = mock(HttpServerRequest.class);
         when(request.getUri()).thenReturn("/someUri/baz");
-        this.router.getDispatcher(request);
-    }*/
+        HttpServerResponse response = mock(HttpServerResponse.class);
 
-    /*@Test
-    public void testGetValidDispatcher() throws HttpDispatcherNotFoundException, InvalidHttpDispatcherException {
+        this.router.route(request, response);
+    }
+
+    @Test
+    public void testRouteValidRequest() throws RouteException {
         HttpServerRequest request = mock(HttpServerRequest.class);
-        when(request.getUri()).thenReturn("/foo/bar");
+        when(request.getUri()).thenReturn("/myCommand/StubCommand");
+        when(request.getBody()).thenReturn("{}");
+        HttpServerResponse response = mock(HttpServerResponse.class);
 
-        HttpDispatcher dispatcher = this.router.getDispatcher(request);
-        assertEquals(HttpCommandDispatcher.class, dispatcher.getClass());
-    }*/
+        this.router.route(request, response);
+    }
 
 }

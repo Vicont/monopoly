@@ -17,7 +17,7 @@ public class Route {
     /**
      * Dispatcher factory class which should handles request
      */
-    private Class<HttpDispatcherFactory> factoryClass;
+    private Class<? extends HttpDispatcherFactory> factoryClass;
 
     /**
      * Set pattern
@@ -42,7 +42,7 @@ public class Route {
      *
      * @param factoryClass Factory class
      */
-    public void setDispatcherFactoryClass(Class<HttpDispatcherFactory> factoryClass) {
+    public void setDispatcherFactoryClass(Class<? extends HttpDispatcherFactory> factoryClass) {
         this.factoryClass = factoryClass;
     }
 
@@ -51,7 +51,7 @@ public class Route {
      *
      * @return Factory class
      */
-    public Class<HttpDispatcherFactory> getDispatcherFactoryClass() {
+    public Class<? extends HttpDispatcherFactory> getDispatcherFactoryClass() {
         return this.factoryClass;
     }
 

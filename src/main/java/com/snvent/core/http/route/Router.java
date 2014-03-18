@@ -3,8 +3,10 @@ package com.snvent.core.http.route;
 import com.snvent.core.http.HttpServerRequest;
 import com.snvent.core.http.HttpServerResponse;
 import com.snvent.core.http.dispatcher.HttpDispatcher;
-import com.snvent.core.http.route.exception.RouteNotFoundException;
 import com.snvent.core.http.dispatcher.factory.HttpDispatcherFactory;
+import com.snvent.core.http.route.exception.InvalidDispatcherFactoryException;
+import com.snvent.core.http.route.exception.RouteException;
+import com.snvent.core.http.route.exception.RouteNotFoundException;
 import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
@@ -51,23 +53,28 @@ public class Router implements ApplicationContextAware {
      * Route HTTP request
      *
      * @param request HTTP request
-     * @throws RouteNotFoundException
+     * @throws RouteException
      */
-    public void route (HttpServerRequest request, HttpServerResponse response) throws RouteNotFoundException {
+    public void route (HttpServerRequest request, HttpServerResponse response) throws RouteException {
         String uri = request.getUri();
 
         for (ConstructedRoute constructedRoute : this.routes) {
             if (constructedRoute.matches(uri)) {
                 Map<String, String> params = constructedRoute.findParams(uri);
-                Class<HttpDispatcherFactory> dispatcherFactoryClass = constructedRoute.getDispatcherFactoryClass();
-                HttpDispatcherFactory factory = applicationContext.getBean(dispatcherFactoryClass);
+                Class<? extends HttpDispatcherFactory> dispatcherFactoryClass = constructedRoute.getDispatcherFactoryClass();
 
-                HttpDispatcher dispatcher = factory.getDispatcher();
-                dispatcher.setParams(params);
-                dispatcher.setRequest(request);
-                dispatcher.setResponse(response);
-                dispatcher.process();
-                return;
+                try {
+                    HttpDispatcherFactory factory = applicationContext.getBean(dispatcherFactoryClass.getName(), dispatcherFactoryClass);
+
+                    HttpDispatcher dispatcher = factory.getDispatcher();
+                    dispatcher.setParams(params);
+                    dispatcher.setRequest(request);
+                    dispatcher.setResponse(response);
+                    dispatcher.process();
+                    return;
+                } catch (BeansException e) {
+                    throw new InvalidDispatcherFactoryException("Component with class \"" + dispatcherFactoryClass + "\" is not found");
+                }
             }
         }
 
