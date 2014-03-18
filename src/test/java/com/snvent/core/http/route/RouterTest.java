@@ -64,8 +64,7 @@ public class RouterTest implements ApplicationContextAware {
     @Test
     public void testRouteValidRequest() throws RouteException {
         HttpServerRequest request = mock(HttpServerRequest.class);
-        when(request.getUri()).thenReturn("/myCommand/StubCommand");
-        when(request.getBody()).thenReturn("{}");
+        when(request.getUri()).thenReturn("/any/location");
         HttpServerResponse response = mock(HttpServerResponse.class);
 
         this.router.route(request, response);

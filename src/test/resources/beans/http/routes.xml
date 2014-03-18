@@ -11,8 +11,8 @@
                     <property name="dispatcherFactoryClass" value="com.snvent.core.http.dispatcher.factory.HttpDispatcherFactory" />
                 </bean>
                 <bean class="com.snvent.core.http.route.Route">
-                    <property name="pattern" value="/myCommand/:commandName" />
-                    <property name="dispatcherFactoryClass" value="com.snvent.core.http.dispatcher.factory.HttpCommandDispatcherFactory" />
+                    <property name="pattern" value="/:foo/:bar" />
+                    <property name="dispatcherFactoryClass" value="com.snvent.core.http.route.stub.StubHttpDispatcherFactory" />
                 </bean>
             </list>
         </constructor-arg>
