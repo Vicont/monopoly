@@ -3,14 +3,16 @@ package com.snvent.core.http.dispatcher.factory;
 import com.snvent.core.http.annotation.After;
 import com.snvent.core.http.annotation.Before;
 import com.snvent.core.http.annotation.CommandAction;
-import com.snvent.core.http.annotation.command.IncomingCommand;
-import com.snvent.core.http.annotation.controller.CommandController;
 import com.snvent.core.http.dispatcher.HttpCommandDispatcher;
-import com.snvent.core.http.dispatcher.definition.HttpCommandExecutionDefinition;
 import com.snvent.core.http.dispatcher.HttpDispatcher;
+import com.snvent.core.http.dispatcher.definition.HttpCommandExecutionDefinition;
 import com.snvent.core.http.dispatcher.factory.exception.HttpDispatcherFactoryInitializationException;
+import com.snvent.core.http.dispatcher.factory.storage.CommandControllerNamesStorage;
+import com.snvent.core.http.dispatcher.factory.storage.IncomingCommandNamesStorage;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.Map;
@@ -28,13 +30,26 @@ public class HttpCommandDispatcherFactory extends AbstractHttpDispatcherFactory 
      */
     private final Map<String, HttpCommandExecutionDefinition> definitions = new HashMap<String, HttpCommandExecutionDefinition>();
 
+    /**
+     * Storage for names of incoming commands
+     */
+    @Autowired
+    protected IncomingCommandNamesStorage commandNamesStorage;
+
+    /**
+     * Storage for controller names
+     */
+    @Autowired
+    protected CommandControllerNamesStorage controllerNamesStorage;
+
+    @PostConstruct
     @Override
     public void init() throws HttpDispatcherFactoryInitializationException {
-        String[] names = this.beanFactory.getBeanNamesForAnnotation(CommandController.class);
         Map<String, Class> structures = this.findCommandStructures();
+        Map<String, String> names = this.controllerNamesStorage.getAll();
 
-        for (String controllerName : names) {
-            String className = this.beanFactory.getBeanDefinition(controllerName).getBeanClassName();
+        for (String controllerName : names.keySet()) {
+            String className = names.get(controllerName);
             Class controllerClass;
 
             try {
@@ -96,10 +111,10 @@ public class HttpCommandDispatcherFactory extends AbstractHttpDispatcherFactory 
      */
     private Map<String, Class> findCommandStructures() throws HttpDispatcherFactoryInitializationException {
         Map<String, Class> commands = new HashMap<String, Class>();
-        String[] names = this.beanFactory.getBeanNamesForAnnotation(IncomingCommand.class);
+        Map<String, String> names = this.commandNamesStorage.getAll();
 
-        for (String structureBeanName : names) {
-            String className = this.beanFactory.getBeanDefinition(structureBeanName).getBeanClassName();
+        for (String structureBeanName : names.keySet()) {
+            String className = names.get(structureBeanName);
             Class commandStructure;
 
             try {

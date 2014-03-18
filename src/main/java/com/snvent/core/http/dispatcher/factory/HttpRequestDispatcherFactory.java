@@ -5,6 +5,7 @@ import com.snvent.core.http.dispatcher.HttpRequestDispatcher;
 import com.snvent.core.http.dispatcher.definition.HttpCommandExecutionDefinition;
 import org.springframework.stereotype.Component;
 
+import javax.annotation.PostConstruct;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,8 +17,9 @@ import java.util.Map;
 @Component
 public class HttpRequestDispatcherFactory extends AbstractHttpDispatcherFactory {
 
-    private final Map<String,HttpCommandExecutionDefinition> definitions = new HashMap<String, HttpCommandExecutionDefinition>();
+    private final Map<String, HttpCommandExecutionDefinition> definitions = new HashMap<String, HttpCommandExecutionDefinition>();
 
+    @PostConstruct
     @Override
     public void init() {
 
