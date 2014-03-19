@@ -11,9 +11,9 @@ import org.springframework.beans.BeansException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Factory that picks dispatcher for HTTP request
@@ -38,10 +38,7 @@ public class Router implements ApplicationContextAware {
      * @param routes Route list
      */
     public Router(List<Route> routes) {
-        this.routes = new ArrayList<ConstructedRoute>();
-        for (Route route : routes) {
-            this.routes.add(new ConstructedRoute(route));
-        }
+        this.routes = routes.stream().map(ConstructedRoute::new).collect(Collectors.toList());
     }
 
     @Override

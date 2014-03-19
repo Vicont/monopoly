@@ -71,17 +71,12 @@ public class GameApplication implements Application {
         if (services == null || services.size() == 0) {
             throw new RuntimeException("Any application service hasn't been found");
         }
-
-        for (Service service : services) {
-            service.activate();
-        }
+        services.forEach(Service::activate);
     }
 
     @Override
     public void stop() {
-        for (Service service : services) {
-            service.shutdown();
-        }
+        services.forEach(Service::shutdown);
     }
 
     @Override

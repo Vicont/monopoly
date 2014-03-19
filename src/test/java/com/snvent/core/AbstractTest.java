@@ -21,7 +21,7 @@ abstract public class AbstractTest implements ApplicationContextAware {
     protected ApplicationContext applicationContext;
 
     @Override
-    public final void setApplicationContext(final ApplicationContext applicationContext) {
+    public final void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
 

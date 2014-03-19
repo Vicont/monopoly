@@ -185,9 +185,7 @@ public class HttpServerRequest {
             for (Map.Entry<String, List<String>> param: params.entrySet()) {
                 String key = param.getKey();
                 List<String> values = param.getValue();
-                for (String value : values) {
-                    this.setParam(key, value);
-                }
+                values.forEach(value -> this.setParam(key, value));
             }
         }
     }
@@ -199,10 +197,7 @@ public class HttpServerRequest {
         String cookieString = this.getHeaders().get(COOKIE);
         if (cookieString != null) {
             Set<Cookie> cookieSet = CookieDecoder.decode(cookieString);
-
-            for (Cookie cookie : cookieSet) {
-                this.cookies.put(cookie.getName(), cookie);
-            }
+            cookieSet.forEach(cookie -> this.cookies.put(cookie.getName(), cookie));
         }
     }
 
