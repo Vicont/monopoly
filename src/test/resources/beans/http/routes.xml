@@ -12,7 +12,7 @@
                 </bean>
                 <bean class="com.snvent.core.http.route.Route">
                     <property name="pattern" value="/:foo/:bar" />
-                    <property name="dispatcherFactoryClass" value="com.snvent.core.http.route.stub.StubHttpDispatcherFactory" />
+                    <property name="dispatcherFactoryClass" value="com.snvent.core.http.stub.StubHttpDispatcherFactory" />
                 </bean>
             </list>
         </constructor-arg>

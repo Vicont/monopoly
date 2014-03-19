@@ -1,4 +1,4 @@
-package com.snvent.core.http.route.stub;
+package com.snvent.core.http.stub;
 
 import com.snvent.core.http.dispatcher.AbstractHttpDispatcher;
 import com.snvent.core.http.dispatcher.HttpDispatcher;

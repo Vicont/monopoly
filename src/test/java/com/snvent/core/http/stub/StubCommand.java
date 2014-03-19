@@ -1,4 +1,4 @@
-package com.snvent.core.http.route.stub;
+package com.snvent.core.http.stub;
 
 import com.snvent.core.http.annotation.command.IncomingCommand;
 
@@ -7,6 +7,5 @@ import com.snvent.core.http.annotation.command.IncomingCommand;
  *
  * @author vicont
  */
-@IncomingCommand
 public class StubCommand {
 }

@@ -7,6 +7,8 @@ import com.snvent.core.http.dispatcher.HttpCommandDispatcher;
 import com.snvent.core.http.dispatcher.HttpDispatcher;
 import com.snvent.core.http.dispatcher.definition.HttpCommandExecutionDefinition;
 import com.snvent.core.http.dispatcher.factory.exception.HttpDispatcherFactoryInitializationException;
+import com.snvent.core.http.dispatcher.factory.exception.InvalidCommandStructureException;
+import com.snvent.core.http.dispatcher.factory.exception.InvalidControllerException;
 import com.snvent.core.http.dispatcher.factory.storage.CommandControllerNamesStorage;
 import com.snvent.core.http.dispatcher.factory.storage.IncomingCommandNamesStorage;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,13 +36,31 @@ public class HttpCommandDispatcherFactory extends AbstractHttpDispatcherFactory 
      * Storage for names of incoming commands
      */
     @Autowired
-    protected IncomingCommandNamesStorage commandNamesStorage;
+    private IncomingCommandNamesStorage commandNamesStorage;
 
     /**
      * Storage for controller names
      */
     @Autowired
-    protected CommandControllerNamesStorage controllerNamesStorage;
+    private CommandControllerNamesStorage controllerNamesStorage;
+
+    /**
+     * Set storage for names of incoming commands
+     *
+     * @param storage Names storage
+     */
+    public void setCommandNamesStorage(IncomingCommandNamesStorage storage) {
+        this.commandNamesStorage = storage;
+    }
+
+    /**
+     * Set storage for controller names
+     *
+     * @param storage Names storage
+     */
+    public void setControllerNamesStorage(CommandControllerNamesStorage storage) {
+        this.controllerNamesStorage = storage;
+    }
 
     @PostConstruct
     @Override
@@ -55,7 +75,7 @@ public class HttpCommandDispatcherFactory extends AbstractHttpDispatcherFactory 
             try {
                 controllerClass = Class.forName(className);
             } catch (ClassNotFoundException e) {
-                throw new HttpDispatcherFactoryInitializationException("Controller with name \"" + className + "\" is not found");
+                throw new InvalidControllerException("Controller with name \"" + className + "\" is not found");
             }
 
             Method[] methods = controllerClass.getMethods();
@@ -65,13 +85,13 @@ public class HttpCommandDispatcherFactory extends AbstractHttpDispatcherFactory 
             for (Method method : methods) {
                 if (method.isAnnotationPresent(Before.class)) {
                     if (beforeMethod != null) {
-                        throw new HttpDispatcherFactoryInitializationException("@Before method has already registered for \"" + className + "\"");
+                        throw new InvalidControllerException("@Before method has already registered for \"" + className + "\"");
                     }
                     beforeMethod = method;
                 }
                 if (method.isAnnotationPresent(After.class)) {
                     if (afterMethod != null) {
-                        throw new HttpDispatcherFactoryInitializationException("@After method has already registered for \"" + className + "\"");
+                        throw new InvalidControllerException("@After method has already registered for \"" + className + "\"");
                     }
                     afterMethod = method;
                 }
@@ -83,11 +103,11 @@ public class HttpCommandDispatcherFactory extends AbstractHttpDispatcherFactory 
                     String commandName = action.value();
 
                     if (definitions.containsKey(commandName)) {
-                        throw new HttpDispatcherFactoryInitializationException("Controller for command \"" + commandName + "\" has already registered");
+                        throw new InvalidControllerException("Controller for command \"" + commandName + "\" has already registered");
                     }
 
                     if (!structures.containsKey(commandName)) {
-                        throw new HttpDispatcherFactoryInitializationException("Structure for command \"" + commandName + "\" is not found");
+                        throw new InvalidCommandStructureException("Structure for command \"" + commandName + "\" is not found");
                     }
 
                     HttpCommandExecutionDefinition definition = new HttpCommandExecutionDefinition();
@@ -120,13 +140,13 @@ public class HttpCommandDispatcherFactory extends AbstractHttpDispatcherFactory 
             try {
                 commandStructure = Class.forName(className);
             } catch (ClassNotFoundException e) {
-                throw new HttpDispatcherFactoryInitializationException("Structure with name \"" + className + "\" is not found");
+                throw new InvalidCommandStructureException("Structure with name \"" + className + "\" is not found");
             }
 
             String commandName = commandStructure.getSimpleName();
 
             if (commands.containsKey(commandName)) {
-                throw new HttpDispatcherFactoryInitializationException("Structure for command \"" + commandName + "\" has already registered");
+                throw new InvalidCommandStructureException("Structure for command \"" + commandName + "\" has already registered");
             }
 
             commands.put(commandName, commandStructure);

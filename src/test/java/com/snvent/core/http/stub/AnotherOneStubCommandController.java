@@ -1,7 +1,6 @@
-package com.snvent.core.http.route.stub;
+package com.snvent.core.http.stub;
 
 import com.snvent.core.http.annotation.CommandAction;
-import com.snvent.core.http.annotation.controller.CommandController;
 import com.snvent.core.http.controller.AbstractHttpCommandController;
 
 /**
@@ -9,8 +8,7 @@ import com.snvent.core.http.controller.AbstractHttpCommandController;
  *
  * @author vicont
  */
-@CommandController
-public class StubCommandController extends AbstractHttpCommandController {
+public class AnotherOneStubCommandController extends AbstractHttpCommandController {
 
     @CommandAction("StubCommand")
     public void stubCommandMethod() {
