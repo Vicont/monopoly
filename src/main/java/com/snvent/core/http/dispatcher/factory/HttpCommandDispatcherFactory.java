@@ -6,7 +6,6 @@ import com.snvent.core.http.annotation.CommandAction;
 import com.snvent.core.http.dispatcher.HttpCommandDispatcher;
 import com.snvent.core.http.dispatcher.HttpDispatcher;
 import com.snvent.core.http.dispatcher.definition.HttpCommandExecutionDefinition;
-import com.snvent.core.http.dispatcher.factory.exception.HttpDispatcherFactoryInitializationException;
 import com.snvent.core.http.dispatcher.factory.exception.InvalidCommandStructureException;
 import com.snvent.core.http.dispatcher.factory.exception.InvalidControllerException;
 import com.snvent.core.http.dispatcher.factory.storage.CommandControllerNamesStorage;
@@ -64,7 +63,7 @@ public class HttpCommandDispatcherFactory extends AbstractHttpDispatcherFactory 
 
     @PostConstruct
     @Override
-    public void init() throws HttpDispatcherFactoryInitializationException {
+    public void init() throws InvalidControllerException, InvalidCommandStructureException {
         Map<String, Class> structures = this.findCommandStructures();
         Map<String, String> names = this.controllerNamesStorage.getAll();
 
@@ -127,9 +126,9 @@ public class HttpCommandDispatcherFactory extends AbstractHttpDispatcherFactory 
      * Find command structures
      *
      * @return Structures map
-     * @throws HttpDispatcherFactoryInitializationException
+     * @throws InvalidCommandStructureException
      */
-    private Map<String, Class> findCommandStructures() throws HttpDispatcherFactoryInitializationException {
+    private Map<String, Class> findCommandStructures() throws InvalidCommandStructureException {
         Map<String, Class> commands = new HashMap<String, Class>();
         Map<String, String> names = this.commandNamesStorage.getAll();
 
