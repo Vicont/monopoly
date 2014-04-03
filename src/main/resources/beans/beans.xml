@@ -14,6 +14,8 @@
             <list>
                 <ref bean="httpService" />
                 <ref bean="webSocketService" />
+                <ref bean="frontendService" />
+                <ref bean="databaseService" />
             </list>
         </property>
     </bean>
@@ -29,6 +31,10 @@
         <property name="host" value="${websocket.server.host}" />
         <property name="port" value="${websocket.server.port}" />
     </bean>
+
+    <bean id="frontendService" class="com.snvent.core.service.FrontendService" autowire="byType" />
+
+    <bean id="databaseService" class="com.snvent.core.service.DatabaseService" autowire="byType" />
 
     <bean class="com.snvent.core.http.route.Router">
         <constructor-arg ref="routes" />

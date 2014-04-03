@@ -1,5 +1,7 @@
 package com.snvent.core.message;
 
+import org.springframework.stereotype.Component;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Queue;
@@ -10,6 +12,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  *
  * @author vicont
  */
+@Component
 public class MessageSystem {
 
     /**
