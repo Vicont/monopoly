@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="DataSourceManagerImpl" format="xml" hash="2311305063">
+    <data-source source="LOCAL" name="hibernate.cfg.xml" uuid="8d1207c1-490d-472c-82dd-14e480641970">
+      <driver-ref>mysql</driver-ref>
+      <jdbc-driver>com.mysql.jdbc.Driver</jdbc-driver>
+      <jdbc-url>jdbc:mysql://localhost:3306/monopoly</jdbc-url>
+      <user-name>monopoly</user-name>
+      <user-password>dfc7dfc5dfc4dfc5dfdadfc5dfc6dfd3</user-password>
+      <schema-pattern>monopoly.*</schema-pattern>
+      <default-schemas>monopoly.*</default-schemas>
+      <libraries>
+        <library>
+          <url>file://$MAVEN_REPOSITORY$/mysql/mysql-connector-java/5.1.30/mysql-connector-java-5.1.30.jar</url>
+        </library>
+      </libraries>
+    </data-source>
+  </component>
+</project>
+

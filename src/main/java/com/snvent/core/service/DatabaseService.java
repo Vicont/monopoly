@@ -1,5 +1,8 @@
 package com.snvent.core.service;
 
+import com.snvent.monopoly.models.DAOFactory;
+import com.snvent.monopoly.models.User;
+import com.snvent.monopoly.models.UserDAO;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -39,6 +42,10 @@ public class DatabaseService extends SubscribedService {
 
     @Override
     public void run() {
+        UserDAO dao = DAOFactory.getInstance().getUserDAO();
+        User user = dao.getById(2);
+        log.info("User loaded: " + user.getNick());
+
         while (!thread.isInterrupted()) {
             try {
                 this.messageSystem.executeForSubscriber(this);
