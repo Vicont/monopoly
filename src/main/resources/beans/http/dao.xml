@@ -9,6 +9,9 @@
                 <entry key="com.snvent.monopoly.models.UserDAO">
                     <bean class="com.snvent.monopoly.models.UserDAOImpl" />
                 </entry>
+                <entry key="com.snvent.monopoly.models.UserSessionDAO">
+                    <bean class="com.snvent.monopoly.models.UserSessionDAOImpl" />
+                </entry>
             </map>
         </constructor-arg>
     </bean>

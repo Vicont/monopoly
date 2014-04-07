@@ -15,5 +15,6 @@
         <property name="current_session_context_class">thread</property>
 
         <mapping class="com.snvent.monopoly.models.User" />
+        <mapping class="com.snvent.monopoly.models.UserSession" />
     </session-factory>
 </hibernate-configuration>

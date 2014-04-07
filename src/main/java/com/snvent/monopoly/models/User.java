@@ -13,25 +13,27 @@ import javax.persistence.*;
 @Table(name = "User")
 public class User {
 
-    private Integer id;
-
-    private String login;
-
-    private String password;
-
-    private String nick;
-
-    private Integer registrationTime;
-
-    private Integer lastLoginTime;
-
-    public User() {
-    }
-
     @Id
     @GeneratedValue(generator = "increment")
     @GenericGenerator(name = "increment", strategy = "increment")
     @Column(name = "id")
+    private Integer id;
+
+    @Column(name = "login")
+    private String login;
+
+    @Column(name = "password")
+    private String password;
+
+    @Column(name = "nick")
+    private String nick;
+
+    @Column(name = "registrationTime")
+    private Integer registrationTime;
+
+    @Column(name = "lastLoginTime")
+    private Integer lastLoginTime = 0;
+
     public Integer getId() {
         return id;
     }
@@ -40,7 +42,6 @@ public class User {
         this.id = id;
     }
 
-    @Column(name = "login")
     public String getLogin() {
         return login;
     }
@@ -49,7 +50,6 @@ public class User {
         this.login = login;
     }
 
-    @Column(name = "password")
     public String getPassword() {
         return password;
     }
@@ -58,7 +58,6 @@ public class User {
         this.password = password;
     }
 
-    @Column(name = "nick")
     public String getNick() {
         return nick;
     }
@@ -67,7 +66,6 @@ public class User {
         this.nick = nick;
     }
 
-    @Column(name = "registrationTime")
     public Integer getRegistrationTime() {
         return registrationTime;
     }
@@ -76,7 +74,6 @@ public class User {
         this.registrationTime = registrationTime;
     }
 
-    @Column(name = "lastLoginTime")
     public Integer getLastLoginTime() {
         return lastLoginTime;
     }
