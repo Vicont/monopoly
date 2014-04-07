@@ -22,6 +22,53 @@ abstract public class SubscribedService extends AbstractService implements Subsc
     protected MessageSystem messageSystem;
 
     /**
+     * Default service tick size
+     */
+    protected static final int TICK_SIZE = 10;
+
+    /**
+     * Service thread
+     */
+    protected Thread thread;
+
+    @Override
+    public void activate() {
+        this.address = new Address();
+        this.messageSystem.addSubscriber(this);
+
+        thread = new Thread(this);
+        thread.start();
+    }
+
+    @Override
+    public void shutdown() {
+        thread.interrupt();
+    }
+
+    @Override
+    public void run() {
+        while (!thread.isInterrupted()) {
+            try {
+                long startDate = System.currentTimeMillis();
+                this.messageSystem.executeForSubscriber(this);
+                this.doOperation();
+                long endDate = System.currentTimeMillis();
+
+                long deltaTime = endDate - startDate;
+                double load = (deltaTime / TICK_SIZE);
+
+                if (load < 1) {
+                    Thread.sleep(TICK_SIZE - deltaTime);
+                }
+            } catch (InterruptedException e) {
+                break;
+            }
+        }
+    }
+
+    public abstract void doOperation();
+
+    /**
      * Set message system
      *
      * @param ms Message system
@@ -37,14 +84,6 @@ abstract public class SubscribedService extends AbstractService implements Subsc
      */
     public MessageSystem getMessageSystem() {
         return this.messageSystem;
-    }
-
-    /**
-     * Initialize message system
-     */
-    protected void initMessageSystem() {
-        this.address = new Address();
-        this.messageSystem.addSubscriber(this);
     }
 
     @Override

@@ -11,42 +11,13 @@ import org.slf4j.LoggerFactory;
 public class FrontendService extends SubscribedService {
 
     /**
-     * Default service tick size
-     */
-    private static final int TICK_SIZE = 10;
-
-    /**
-     * Service thread
-     */
-    private Thread thread;
-
-    /**
      * Logger
      */
     private static final Logger log = LoggerFactory.getLogger(FrontendService.class);
 
     @Override
-    public void activate() {
-        this.initMessageSystem();
-        thread = new Thread(this);
-        thread.start();
-    }
+    public void doOperation() {
 
-    @Override
-    public void shutdown() {
-        thread.interrupt();
-    }
-
-    @Override
-    public void run() {
-        while (!thread.isInterrupted()) {
-            try {
-                this.messageSystem.executeForSubscriber(this);
-                Thread.sleep(TICK_SIZE);
-            } catch (InterruptedException e) {
-                break;
-            }
-        }
     }
 
 }
