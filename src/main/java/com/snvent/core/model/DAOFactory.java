@@ -31,7 +31,14 @@ public class DAOFactory {
      * @return DAO instance
      */
     public <T> T getDAO(Class<T> daoClass) {
-        return daoClass.cast(this.daoMap.get(daoClass));
+        Object dao = this.daoMap.get(daoClass);
+
+        if (dao == null) {
+            String message = String.format("DAO implementation of <%s> not found", daoClass.getSimpleName());
+            throw new DAOException(message);
+        }
+
+        return daoClass.cast(dao);
     }
 
 }
