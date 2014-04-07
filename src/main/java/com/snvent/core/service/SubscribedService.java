@@ -31,6 +31,15 @@ abstract public class SubscribedService extends AbstractService implements Subsc
     }
 
     /**
+     * Retrieve message system
+     *
+     * @return Message system
+     */
+    public MessageSystem getMessageSystem() {
+        return this.messageSystem;
+    }
+
+    /**
      * Initialize message system
      */
     protected void initMessageSystem() {

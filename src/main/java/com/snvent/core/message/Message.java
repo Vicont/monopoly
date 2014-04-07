@@ -47,7 +47,7 @@ abstract public class Message {
     }
 
     /**
-     * Execute message to subscriber
+     * Execute message for subscriber
      *
      * @param subscriber Subscriber
      */

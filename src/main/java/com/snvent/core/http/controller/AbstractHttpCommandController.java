@@ -1,5 +1,8 @@
 package com.snvent.core.http.controller;
 
+import com.snvent.core.service.FrontendService;
+import org.springframework.beans.factory.annotation.Autowired;
+
 /**
  * Abstract HTTP command controller
  *
@@ -11,6 +14,12 @@ abstract public class AbstractHttpCommandController extends AbstractHttpControll
      * Request command
      */
     protected Object requestCommand;
+
+    /**
+     * Frontend service
+     */
+    @Autowired
+    protected FrontendService frontendService;
 
     @Override
     public void setRequestCommand(Object command) {

@@ -55,7 +55,7 @@ public class MessageSystem {
         Queue<Message> recipientMailbox = mailboxes.get(recipient);
 
         if (recipientMailbox == null) {
-            throw new RuntimeException("Mailbox for address <" + recipient + "> is not found");
+            throw new MessageSystemException("Mailbox for address <" + recipient + "> is not found");
         }
 
         recipientMailbox.add(message);
@@ -71,7 +71,7 @@ public class MessageSystem {
         Queue<Message> mailbox = mailboxes.get(address);
 
         if (mailbox == null) {
-            throw new RuntimeException("Mailbox for address <" + address + "> is not found");
+            throw new MessageSystemException("Mailbox for address <" + address + "> is not found");
         }
 
         while (!mailbox.isEmpty()) {

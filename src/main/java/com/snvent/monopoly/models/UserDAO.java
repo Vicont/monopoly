@@ -29,11 +29,12 @@ public interface UserDAO {
     void remove(User user);
 
     /**
-     * Retrieve user by ID
+     * Retrieve user by login and password
      *
-     * @param id ID
+     * @param login Login
+     * @param password Password
      * @return User
      */
-    User getById(Integer id);
+    User getByLoginAndPassword(String login, String password);
 
 }

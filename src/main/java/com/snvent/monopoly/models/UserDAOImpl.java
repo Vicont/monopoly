@@ -1,7 +1,9 @@
 package com.snvent.monopoly.models;
 
 import com.snvent.core.util.HibernateUtil;
+import org.hibernate.Criteria;
 import org.hibernate.Session;
+import org.hibernate.criterion.Restrictions;
 
 /**
  * User DAO implementation
@@ -35,10 +37,14 @@ public class UserDAOImpl implements UserDAO {
     }
 
     @Override
-    public User getById(Integer id) {
+    public User getByLoginAndPassword(String login, String password) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        User user = (User) session.get(User.class, id);
+        Criteria criteria = session.createCriteria(User.class);
+        criteria.add(Restrictions.eq("login", login));
+        criteria.add(Restrictions.eq("password", password));
+
+        User user = (User) criteria.uniqueResult();
         session.getTransaction().commit();
         return user;
     }
