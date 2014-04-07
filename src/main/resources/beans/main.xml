@@ -8,6 +8,7 @@
 
     <import resource="property-placeholder.xml" />
     <import resource="http/routes.xml" />
+    <import resource="http/dao.xml" />
 
     <bean id="application" class="com.snvent.core.GameApplication">
         <property name="services">
@@ -38,6 +39,10 @@
 
     <bean class="com.snvent.core.http.route.Router">
         <constructor-arg ref="routes" />
+    </bean>
+
+    <bean id="daoFactory" class="com.snvent.core.model.DAOFactory">
+        <property name="daoMap" ref="dao" />
     </bean>
 
 </beans>

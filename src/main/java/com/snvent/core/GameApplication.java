@@ -56,7 +56,7 @@ public class GameApplication implements Application {
 
         settings = new ServerSettings();
 
-        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[]{"beans/beans.xml"}, false);
+        ClassPathXmlApplicationContext context = new ClassPathXmlApplicationContext(new String[]{"beans/main.xml"}, false);
         context.getEnvironment().setActiveProfiles(settings.base.environment());
         context.refresh();
 

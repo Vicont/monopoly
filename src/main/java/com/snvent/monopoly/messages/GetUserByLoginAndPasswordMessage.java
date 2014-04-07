@@ -4,7 +4,6 @@ import com.snvent.core.message.Address;
 import com.snvent.core.message.Message;
 import com.snvent.core.message.MessageToService;
 import com.snvent.core.service.DatabaseService;
-import com.snvent.monopoly.models.DAOFactory;
 import com.snvent.monopoly.models.User;
 import com.snvent.monopoly.models.UserDAO;
 
@@ -28,7 +27,7 @@ public class GetUserByLoginAndPasswordMessage extends MessageToService<DatabaseS
 
     @Override
     protected void execute(DatabaseService service) {
-        UserDAO dao = DAOFactory.getInstance().getUserDAO();
+        UserDAO dao = service.getDaoFactory().getDAO(UserDAO.class);
         User user = dao.getByLoginAndPassword(login, password);
 
         Message message = new SetUserByLoginMessage(getTo(), getFrom(), user);
