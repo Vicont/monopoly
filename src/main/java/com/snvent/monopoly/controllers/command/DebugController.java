@@ -4,13 +4,13 @@ import com.snvent.core.http.annotation.After;
 import com.snvent.core.http.annotation.Before;
 import com.snvent.core.http.annotation.CommandAction;
 import com.snvent.core.http.annotation.controller.CommandController;
-import com.snvent.core.http.controller.AbstractHttpCommandController;
 import com.snvent.core.message.Address;
 import com.snvent.core.message.Message;
 import com.snvent.core.message.MessageSystem;
-import com.snvent.core.service.DatabaseService;
 import com.snvent.monopoly.commands.incoming.Debug;
+import com.snvent.monopoly.controllers.MonopolyHttpCommandController;
 import com.snvent.monopoly.messages.GetUserByLoginAndPasswordMessage;
+import com.snvent.monopoly.services.DatabaseService;
 
 /**
  * Debug controller
@@ -18,7 +18,7 @@ import com.snvent.monopoly.messages.GetUserByLoginAndPasswordMessage;
  * @author vicont
  */
 @CommandController
-public class DebugController extends AbstractHttpCommandController {
+public class DebugController extends MonopolyHttpCommandController {
 
     @Before
     public void sayHello() {

@@ -1,6 +1,7 @@
-package com.snvent.core.service;
+package com.snvent.monopoly.services;
 
 import com.snvent.core.model.DAOFactory;
+import com.snvent.core.service.SubscribedService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

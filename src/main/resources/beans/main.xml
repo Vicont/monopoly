@@ -33,9 +33,9 @@
         <property name="port" value="${websocket.server.port}" />
     </bean>
 
-    <bean id="frontendService" class="com.snvent.core.service.FrontendService" autowire="byType" />
+    <bean id="frontendService" class="com.snvent.monopoly.services.FrontendService" autowire="byType" />
 
-    <bean id="databaseService" class="com.snvent.core.service.DatabaseService" autowire="byType" />
+    <bean id="databaseService" class="com.snvent.monopoly.services.DatabaseService" autowire="byType" />
 
     <bean class="com.snvent.core.http.route.Router">
         <constructor-arg ref="routes" />
