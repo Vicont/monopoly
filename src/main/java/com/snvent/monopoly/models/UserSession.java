@@ -22,8 +22,8 @@ public class UserSession {
     @Column(name = "userId")
     private Integer userId;
 
-    @Column(name = "lastActivityTime")
-    private Integer lastActivityTime;
+    @Column(name = "startDate")
+    private Integer startDate;
 
     public String getId() {
         return id;
@@ -41,12 +41,12 @@ public class UserSession {
         this.userId = userId;
     }
 
-    public Integer getLastActivityTime() {
-        return lastActivityTime;
+    public Integer getStartDate() {
+        return startDate;
     }
 
-    public void setLastActivityTime(Integer lastActivityTime) {
-        this.lastActivityTime = lastActivityTime;
+    public void setStartDate(Integer startDate) {
+        this.startDate = startDate;
     }
 
 }

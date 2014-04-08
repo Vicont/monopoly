@@ -22,6 +22,13 @@ public interface UserSessionDAO {
     void remove(UserSession userSession);
 
     /**
+     * Remove session by user ID
+     *
+     * @param userId User ID
+     */
+    void removeByUserId(Integer userId);
+
+    /**
      * Retrieve user session by ID
      *
      * @param id ID
