@@ -1,8 +1,8 @@
 package com.snvent.monopoly.messages;
 
-import com.snvent.core.message.Address;
-import com.snvent.core.message.Message;
-import com.snvent.core.message.MessageToService;
+import com.snvent.core.messageSystem.Address;
+import com.snvent.core.messageSystem.Message;
+import com.snvent.core.messageSystem.MessageToService;
 import com.snvent.monopoly.services.DatabaseService;
 import com.snvent.monopoly.models.User;
 import com.snvent.monopoly.models.UserDAO;

@@ -1,4 +1,4 @@
-package com.snvent.core.message;
+package com.snvent.core.messageSystem;
 
 import com.snvent.core.service.Service;
 
@@ -45,7 +45,7 @@ abstract public class MessageToService<T extends Service> extends Message {
     }
 
     /**
-     * Execute message for service
+     * Execute messageSystem for service
      *
      * @param service Service
      */

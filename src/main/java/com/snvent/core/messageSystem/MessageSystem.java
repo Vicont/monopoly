@@ -1,4 +1,4 @@
-package com.snvent.core.message;
+package com.snvent.core.messageSystem;
 
 import org.springframework.stereotype.Component;
 
@@ -35,7 +35,7 @@ public class MessageSystem {
     }
 
     /**
-     * Add new subscriber to message system
+     * Add new subscriber to messageSystem system
      *
      * @param subscriber Subscriber
      */
@@ -46,7 +46,7 @@ public class MessageSystem {
     }
 
     /**
-     * Send message
+     * Send messageSystem
      *
      * @param message Message
      */

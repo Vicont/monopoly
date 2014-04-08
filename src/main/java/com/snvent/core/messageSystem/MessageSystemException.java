@@ -1,4 +1,4 @@
-package com.snvent.core.message;
+package com.snvent.core.messageSystem;
 
 /**
  * MessageSystemException

@@ -1,10 +1,10 @@
-package com.snvent.core.message;
+package com.snvent.core.messageSystem;
 
 import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Address locator for message system
+ * Address locator for messageSystem system
  *
  * @author vicont
  */

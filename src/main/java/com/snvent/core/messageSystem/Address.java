@@ -1,9 +1,9 @@
-package com.snvent.core.message;
+package com.snvent.core.messageSystem;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Address in message system
+ * Address in messageSystem system
  *
  * @author vicont
  */

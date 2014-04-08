@@ -1,8 +1,8 @@
 package com.snvent.monopoly.services;
 
-import com.snvent.core.message.Address;
-import com.snvent.core.message.Message;
-import com.snvent.core.message.MessageSystem;
+import com.snvent.core.messageSystem.Address;
+import com.snvent.core.messageSystem.Message;
+import com.snvent.core.messageSystem.MessageSystem;
 import com.snvent.core.service.SubscribedService;
 import com.snvent.monopoly.messages.CreateSessionMessage;
 import com.snvent.monopoly.messages.GetUserByLoginAndPasswordMessage;

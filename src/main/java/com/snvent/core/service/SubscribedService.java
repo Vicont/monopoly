@@ -1,8 +1,8 @@
 package com.snvent.core.service;
 
-import com.snvent.core.message.Address;
-import com.snvent.core.message.MessageSystem;
-import com.snvent.core.message.Subscriber;
+import com.snvent.core.messageSystem.Address;
+import com.snvent.core.messageSystem.MessageSystem;
+import com.snvent.core.messageSystem.Subscriber;
 
 /**
  * Abstract subscribed service
