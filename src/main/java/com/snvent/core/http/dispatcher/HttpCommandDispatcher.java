@@ -3,6 +3,7 @@ package com.snvent.core.http.dispatcher;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.snvent.core.http.dispatcher.definition.HttpCommandExecutionDefinition;
 import com.snvent.core.http.controller.HttpCommandController;
+import com.snvent.core.http.dispatcher.exception.InvocationCommandException;
 import io.netty.handler.codec.http.HttpHeaders;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Map;
 
 /**
@@ -121,12 +123,17 @@ public class HttpCommandDispatcher extends AbstractHttpDispatcher {
             String output;
 
             try {
-                output = mapper.writeValueAsString(command);
+                try {
+                    output = mapper.writeValueAsString(command);
+                } catch (Exception e) {
+                    this.createErrorResponse("Error while encoding response: " + e.getMessage());
+                    return;
+                }
                 this.response.setHeader(HttpHeaders.Names.CONTENT_TYPE, "application/json");
                 this.response.end(output);
                 this.log("RESPONSE", output);
             } catch (Exception e) {
-                this.log("ERROR", "Error while encoding response: " + e.getMessage());
+                this.log("ERROR", "Error while sending response: " + e.getMessage());
             }
         } else {
             this.log("ERROR", "Response has already sent");
@@ -143,11 +150,17 @@ public class HttpCommandDispatcher extends AbstractHttpDispatcher {
 
         if (e.getMessage() != null) {
             message += e.getMessage();
-        } else {
-            if (e instanceof InvocationTargetException) {
-                Throwable te = ((InvocationTargetException) e).getTargetException();
+        } else if (e instanceof InvocationTargetException) {
+            Throwable te = ((InvocationTargetException) e).getTargetException();
+            if (te instanceof InvocationCommandException) {
+                this.createErrorResponse(te.getMessage(), ((InvocationCommandException) te).getCode());
+            } else if (te.getMessage() != null) {
                 message += te.getMessage();
+            } else {
+                message += te.toString() + Arrays.toString(te.getStackTrace());
             }
+        } else {
+            message += e.toString() + Arrays.toString(e.getStackTrace());
         }
 
         this.createErrorResponse(message);
@@ -161,6 +174,28 @@ public class HttpCommandDispatcher extends AbstractHttpDispatcher {
     private void createErrorResponse(String message) {
         ErrorOutgoingCommand command = new ErrorOutgoingCommand();
         command.setError(message);
+        this.sendErrorCommand(command);
+    }
+
+    /**
+     * Create error response with message and error code
+     *
+     * @param message Message
+     * @param code Error code
+     */
+    private void createErrorResponse(String message, int code) {
+        ErrorOutgoingCommand command = new ErrorOutgoingCommand();
+        command.setError(message);
+        command.setCode(code);
+        this.sendErrorCommand(command);
+    }
+
+    /**
+     * Encode and send error command to client
+     *
+     * @param command Error command
+     */
+    private void sendErrorCommand(ErrorOutgoingCommand command) {
         ObjectMapper mapper = new ObjectMapper();
 
         if (!this.response.isSent()) {
@@ -176,7 +211,7 @@ public class HttpCommandDispatcher extends AbstractHttpDispatcher {
             this.log("ERROR RESPONSE", output);
             this.response.end(output);
         } else {
-            this.log("ERROR", message);
+            this.log("ERROR", command.getError());
         }
     }
 
@@ -204,6 +239,11 @@ class ErrorOutgoingCommand {
     private String error = "";
 
     /**
+     * Error code
+     */
+    private int code;
+
+    /**
      * Result flag (always false)
      *
      * @return Result flag
@@ -228,6 +268,24 @@ class ErrorOutgoingCommand {
      */
     public void setError(String error) {
         this.error = error;
+    }
+
+    /**
+     * Retrieve error code
+     *
+     * @return Error code
+     */
+    public int getCode() {
+        return this.code;
+    }
+
+    /**
+     * Set error code
+     *
+     * @param code Error code
+     */
+    public void setCode(int code) {
+        this.code = code;
     }
 
 }
