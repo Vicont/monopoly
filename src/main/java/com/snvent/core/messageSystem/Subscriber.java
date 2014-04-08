@@ -1,14 +1,14 @@
 package com.snvent.core.messageSystem;
 
 /**
- * Subscriber in messageSystem system
+ * Subscriber in message system
  *
  * @author vicont
  */
 public interface Subscriber {
 
     /**
-     * Retrieve subscriber's address in messageSystem system
+     * Retrieve subscriber's address in message system
      *
      * @return Address
      */

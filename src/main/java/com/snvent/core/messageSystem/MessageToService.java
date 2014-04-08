@@ -45,7 +45,7 @@ abstract public class MessageToService<T extends Service> extends Message {
     }
 
     /**
-     * Execute messageSystem for service
+     * Execute message for service
      *
      * @param service Service
      */

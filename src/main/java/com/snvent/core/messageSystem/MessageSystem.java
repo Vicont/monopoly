@@ -35,7 +35,7 @@ public class MessageSystem {
     }
 
     /**
-     * Add new subscriber to messageSystem system
+     * Add new subscriber to message system
      *
      * @param subscriber Subscriber
      */
@@ -46,7 +46,7 @@ public class MessageSystem {
     }
 
     /**
-     * Send messageSystem
+     * Send message
      *
      * @param message Message
      */

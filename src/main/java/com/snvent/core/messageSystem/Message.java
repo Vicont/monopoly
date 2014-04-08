@@ -1,7 +1,7 @@
 package com.snvent.core.messageSystem;
 
 /**
- * Abstract messageSystem
+ * Abstract message
  *
  * @author vicont
  */
@@ -29,7 +29,7 @@ abstract public class Message {
     }
 
     /**
-     * Retrieve messageSystem sender address
+     * Retrieve message sender address
      *
      * @return Sender address
      */
@@ -38,7 +38,7 @@ abstract public class Message {
     }
 
     /**
-     * Retrieve messageSystem recipient address
+     * Retrieve message recipient address
      *
      * @return Recipient address
      */
@@ -47,7 +47,7 @@ abstract public class Message {
     }
 
     /**
-     * Execute messageSystem for subscriber
+     * Execute message for subscriber
      *
      * @param subscriber Subscriber
      */

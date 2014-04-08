@@ -3,7 +3,7 @@ package com.snvent.core.messageSystem;
 import java.util.concurrent.atomic.AtomicInteger;
 
 /**
- * Address in messageSystem system
+ * Address in message system
  *
  * @author vicont
  */

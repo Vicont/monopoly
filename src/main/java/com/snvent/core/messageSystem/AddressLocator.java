@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * Address locator for messageSystem system
+ * Address locator for message system
  *
  * @author vicont
  */
