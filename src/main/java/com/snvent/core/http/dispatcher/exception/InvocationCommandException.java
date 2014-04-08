@@ -1,5 +1,7 @@
 package com.snvent.core.http.dispatcher.exception;
 
+import com.snvent.core.error.ErrorCode;
+
 /**
  * InvocationCommandException
  *
@@ -10,7 +12,7 @@ public class InvocationCommandException extends RuntimeException {
     /**
      * Error code
      */
-    private int code;
+    private ErrorCode code;
 
     /**
      * Constructor
@@ -18,7 +20,7 @@ public class InvocationCommandException extends RuntimeException {
      * @param message Error message
      * @param code Error code
      */
-    public InvocationCommandException(String message, int code) {
+    public InvocationCommandException(String message, ErrorCode code) {
         super(message);
         this.code = code;
     }
@@ -38,7 +40,7 @@ public class InvocationCommandException extends RuntimeException {
      * @return Error code
      */
     public int getCode() {
-        return this.code;
+        return this.code.getCode();
     }
 
 }
