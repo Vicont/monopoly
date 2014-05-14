@@ -3,20 +3,19 @@ package com.snvent.monopoly.messages;
 import com.snvent.core.messageSystem.Address;
 import com.snvent.core.messageSystem.Message;
 import com.snvent.core.messageSystem.MessageToService;
-import com.snvent.monopoly.models.UserSession;
 import com.snvent.monopoly.models.UserSessionDAO;
 import com.snvent.monopoly.services.DatabaseService;
 
 /**
- * CreateSessionMessage
+ * RemoveSessionMessage
  *
  * @author vicont
  */
-public class CreateSessionMessage extends MessageToService<DatabaseService> {
+public class RemoveSessionMessage extends MessageToService<DatabaseService> {
 
     private Integer userId;
 
-    public CreateSessionMessage(Address from, Address to, Integer userId) {
+    public RemoveSessionMessage(Address from, Address to, Integer userId) {
         super(from, to);
         this.userId = userId;
         this.recipientClass = DatabaseService.class;
@@ -25,13 +24,9 @@ public class CreateSessionMessage extends MessageToService<DatabaseService> {
     @Override
     protected void execute(DatabaseService service) {
         UserSessionDAO dao = service.getDaoFactory().getDAO(UserSessionDAO.class);
+        dao.removeByUserId(userId);
 
-        UserSession userSession = new UserSession();
-        userSession.setUserId(userId);
-        userSession.setStartDate((int) (System.currentTimeMillis() / 1000));
-        dao.add(userSession);
-
-        Message message = new SetSessionByUserId(getTo(), getFrom(), userSession);
+        Message message = new SetUserWithSessionToRemove(getTo(), getFrom(), userId);
         service.getMessageSystem().sendMessage(message);
     }
 

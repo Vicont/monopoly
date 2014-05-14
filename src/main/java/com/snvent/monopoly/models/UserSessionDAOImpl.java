@@ -1,9 +1,7 @@
 package com.snvent.monopoly.models;
 
 import com.snvent.core.util.HibernateUtil;
-import org.hibernate.Criteria;
 import org.hibernate.Session;
-import org.hibernate.criterion.Restrictions;
 
 /**
  * User session DAO implementation
@@ -32,8 +30,8 @@ public class UserSessionDAOImpl implements UserSessionDAO {
     public void removeByUserId(Integer userId) {
         Session session = HibernateUtil.getSessionFactory().getCurrentSession();
         session.beginTransaction();
-        Criteria criteria = session.createCriteria(UserSession.class).add(Restrictions.eq("userId", userId));
-        session.delete(criteria.uniqueResult());
+        String hql = "DELETE FROM UserSession WHERE userId = :userId";
+        session.createQuery(hql).setInteger("userId", userId).executeUpdate();
         session.getTransaction().commit();
     }
 

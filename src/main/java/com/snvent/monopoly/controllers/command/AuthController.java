@@ -9,6 +9,7 @@ import com.snvent.monopoly.commands.outgoing.SessionCreated;
 import com.snvent.monopoly.controllers.MonopolyHttpCommandController;
 import com.snvent.monopoly.models.User;
 import com.snvent.monopoly.models.UserSession;
+import com.snvent.monopoly.services.frontend.UserStorage;
 
 /**
  * Auth controller
@@ -30,8 +31,13 @@ public class AuthController extends MonopolyHttpCommandController {
         User user = this.frontendService.getUserByLoginAndPassword(command.login, command.password);
 
         if (user != null) {
+            UserStorage userStorage = this.frontendService.getUserStorage();
+            if (userStorage.has(user.getId())) {
+                this.frontendService.removeUserSession(user);
+            }
+
             session = this.frontendService.createUserSession(user);
-            this.frontendService.getUserStorage().add(user);
+            userStorage.add(user);
             return new SessionCreated(session.getId());
         } else {
             throw new InvocationCommandException("Login failed", GameErrorCode.LOGIN_FAILED);

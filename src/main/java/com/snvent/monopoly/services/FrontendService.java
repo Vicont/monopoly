@@ -1,11 +1,13 @@
 package com.snvent.monopoly.services;
 
+import com.corundumstudio.socketio.misc.ConcurrentHashSet;
 import com.snvent.core.messageSystem.Address;
 import com.snvent.core.messageSystem.Message;
 import com.snvent.core.messageSystem.MessageSystem;
 import com.snvent.core.service.SubscribedService;
 import com.snvent.monopoly.messages.CreateSessionMessage;
 import com.snvent.monopoly.messages.GetUserByLoginAndPasswordMessage;
+import com.snvent.monopoly.messages.RemoveSessionMessage;
 import com.snvent.monopoly.models.User;
 import com.snvent.monopoly.models.UserSession;
 import com.snvent.monopoly.services.frontend.UserStorage;
@@ -13,6 +15,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Map;
+import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
@@ -30,6 +33,8 @@ public class FrontendService extends SubscribedService {
     private Map<String, User> mapLoginToUser = new ConcurrentHashMap<>();
 
     private Map<Integer, UserSession> mapUserIdToSession = new ConcurrentHashMap<>();
+
+    private Set<Integer> usersWithSessionToRemove = new ConcurrentHashSet<>();
 
     /**
      * Logger
@@ -66,6 +71,27 @@ public class FrontendService extends SubscribedService {
 
     public void setUserByLogin(String login, User user) {
         this.mapLoginToUser.put(login, user);
+    }
+
+    public void removeUserSession(User user) {
+        this.usersWithSessionToRemove.remove(user.getId());
+
+        MessageSystem ms = this.getMessageSystem();
+        Address recipient = ms.getAddressLocator().getAddress(DatabaseService.class);
+        Message message = new RemoveSessionMessage(this.getAddress(), recipient, user.getId());
+        ms.sendMessage(message);
+
+        while (!usersWithSessionToRemove.contains(user.getId())) {
+            try {
+                Thread.sleep(TICK_SIZE / 10);
+            } catch (InterruptedException e) {
+                break;
+            }
+        }
+    }
+
+    public void setUserWithSessionToRemove(Integer userId) {
+        this.usersWithSessionToRemove.add(userId);
     }
 
     public UserSession createUserSession(User user) {
