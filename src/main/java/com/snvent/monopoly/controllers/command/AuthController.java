@@ -31,9 +31,11 @@ public class AuthController extends MonopolyHttpCommandController {
         User user = this.frontendService.getUserByLoginAndPassword(command.login, command.password);
 
         if (user != null) {
+            this.frontendService.removeUserSession(user);
+
             UserStorage userStorage = this.frontendService.getUserStorage();
             if (userStorage.has(user.getId())) {
-                this.frontendService.removeUserSession(user);
+                userStorage.remove(user);
             }
 
             session = this.frontendService.createUserSession(user);

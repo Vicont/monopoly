@@ -1,22 +1,15 @@
 package com.snvent.monopoly.services;
 
-import com.corundumstudio.socketio.misc.ConcurrentHashSet;
-import com.snvent.core.messageSystem.Address;
-import com.snvent.core.messageSystem.Message;
-import com.snvent.core.messageSystem.MessageSystem;
+import com.snvent.core.model.DAOFactory;
 import com.snvent.core.service.SubscribedService;
-import com.snvent.monopoly.messages.CreateSessionMessage;
-import com.snvent.monopoly.messages.GetUserByLoginAndPasswordMessage;
-import com.snvent.monopoly.messages.RemoveSessionMessage;
 import com.snvent.monopoly.models.User;
+import com.snvent.monopoly.models.UserDAO;
 import com.snvent.monopoly.models.UserSession;
+import com.snvent.monopoly.models.UserSessionDAO;
 import com.snvent.monopoly.services.frontend.UserStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
+import org.springframework.beans.factory.annotation.Autowired;
 
 /**
  * Frontend service
@@ -30,11 +23,11 @@ public class FrontendService extends SubscribedService {
      */
     private UserStorage userStorage = new UserStorage();
 
-    private Map<String, User> mapLoginToUser = new ConcurrentHashMap<>();
-
-    private Map<Integer, UserSession> mapUserIdToSession = new ConcurrentHashMap<>();
-
-    private Set<Integer> usersWithSessionToRemove = new ConcurrentHashSet<>();
+    /**
+     * DAO factory
+     */
+    @Autowired
+    private DAOFactory daoFactory;
 
     /**
      * Logger
@@ -50,71 +43,43 @@ public class FrontendService extends SubscribedService {
         return this.userStorage;
     }
 
+    /**
+     * Retrieve user by login and password
+     *
+     * @param login User login
+     * @param password User password
+     * @return User
+     */
     public User getUserByLoginAndPassword(String login, String password) {
-        this.mapLoginToUser.remove(login);
-
-        MessageSystem ms = this.getMessageSystem();
-        Address recipient = ms.getAddressLocator().getAddress(DatabaseService.class);
-        Message message = new GetUserByLoginAndPasswordMessage(this.getAddress(), recipient, login, password);
-        ms.sendMessage(message);
-
-        while (!mapLoginToUser.containsKey(login)) {
-            try {
-                Thread.sleep(TICK_SIZE / 10);
-            } catch (InterruptedException e) {
-                break;
-            }
-        }
-
-        return mapLoginToUser.get(login);
+        UserDAO dao = this.daoFactory.getDAO(UserDAO.class);
+        return dao.getByLoginAndPassword(login, password);
     }
 
-    public void setUserByLogin(String login, User user) {
-        this.mapLoginToUser.put(login, user);
-    }
-
+    /**
+     * Remove session for user
+     *
+     * @param user User
+     */
     public void removeUserSession(User user) {
-        this.usersWithSessionToRemove.remove(user.getId());
-
-        MessageSystem ms = this.getMessageSystem();
-        Address recipient = ms.getAddressLocator().getAddress(DatabaseService.class);
-        Message message = new RemoveSessionMessage(this.getAddress(), recipient, user.getId());
-        ms.sendMessage(message);
-
-        while (!usersWithSessionToRemove.contains(user.getId())) {
-            try {
-                Thread.sleep(TICK_SIZE / 10);
-            } catch (InterruptedException e) {
-                break;
-            }
-        }
+        UserSessionDAO dao = this.daoFactory.getDAO(UserSessionDAO.class);
+        dao.removeByUserId(user.getId());
     }
 
-    public void setUserWithSessionToRemove(Integer userId) {
-        this.usersWithSessionToRemove.add(userId);
-    }
-
+    /**
+     * Create new session for user
+     *
+     * @param user User
+     * @return UserSession
+     */
     public UserSession createUserSession(User user) {
-        this.mapUserIdToSession.remove(user.getId());
+        UserSessionDAO dao = this.daoFactory.getDAO(UserSessionDAO.class);
 
-        MessageSystem ms = this.getMessageSystem();
-        Address recipient = ms.getAddressLocator().getAddress(DatabaseService.class);
-        Message message = new CreateSessionMessage(this.getAddress(), recipient, user.getId());
-        ms.sendMessage(message);
+        UserSession userSession = new UserSession();
+        userSession.setUserId(user.getId());
+        userSession.setStartDate((int) (System.currentTimeMillis() / 1000));
+        dao.add(userSession);
 
-        while (!mapUserIdToSession.containsKey(user.getId())) {
-            try {
-                Thread.sleep(TICK_SIZE / 10);
-            } catch (InterruptedException e) {
-                break;
-            }
-        }
-
-        return mapUserIdToSession.get(user.getId());
-    }
-
-    public void setSessionByUserId(Integer userId, UserSession userSession) {
-        this.mapUserIdToSession.put(userId, userSession);
+        return userSession;
     }
 
     @Override
