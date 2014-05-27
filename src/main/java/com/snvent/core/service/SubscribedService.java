@@ -51,7 +51,7 @@ abstract public class SubscribedService extends AbstractService implements Subsc
             try {
                 long startDate = System.currentTimeMillis();
                 this.messageSystem.executeForSubscriber(this);
-                this.doOperation();
+                this.tick();
                 long endDate = System.currentTimeMillis();
 
                 long deltaTime = endDate - startDate;
@@ -66,7 +66,10 @@ abstract public class SubscribedService extends AbstractService implements Subsc
         }
     }
 
-    public abstract void doOperation();
+    /**
+     * Do service work in this method
+     */
+    public abstract void tick();
 
     /**
      * Set message system

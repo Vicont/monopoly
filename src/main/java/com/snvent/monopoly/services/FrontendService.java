@@ -83,8 +83,8 @@ public class FrontendService extends SubscribedService {
     }
 
     @Override
-    public void doOperation() {
-
+    public void tick() {
+        // do nothing
     }
 
 }
