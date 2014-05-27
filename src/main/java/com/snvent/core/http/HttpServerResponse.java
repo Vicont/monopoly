@@ -120,7 +120,7 @@ public class HttpServerResponse {
      */
     public void write(String content) {
         if (this.isSent) {
-            throw new RuntimeException("HTTP response is already sent");
+            throw new HttpServerException("HTTP response is already sent");
         }
 
         this.hasContent = true;
@@ -151,7 +151,7 @@ public class HttpServerResponse {
      */
     public void end() {
         if (this.isSent) {
-            throw new RuntimeException("HTTP response is already sent");
+            throw new HttpServerException("HTTP response is already sent");
         }
 
         if (this.hasContent) {

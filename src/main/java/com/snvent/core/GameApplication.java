@@ -69,7 +69,7 @@ public class GameApplication implements Application {
     @Override
     public void start() {
         if (services == null || services.size() == 0) {
-            throw new RuntimeException("Any application service hasn't been found");
+            throw new ApplicationException("Any application service hasn't been found");
         }
         services.forEach(Service::activate);
     }
