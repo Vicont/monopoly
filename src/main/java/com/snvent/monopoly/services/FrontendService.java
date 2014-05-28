@@ -6,7 +6,7 @@ import com.snvent.monopoly.models.User;
 import com.snvent.monopoly.models.UserDAO;
 import com.snvent.monopoly.models.UserSession;
 import com.snvent.monopoly.models.UserSessionDAO;
-import com.snvent.monopoly.services.frontend.UserStorage;
+import com.snvent.monopoly.services.frontend.UserSessionStorage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -21,7 +21,8 @@ public class FrontendService extends SubscribedService {
     /**
      * Storage for logged users
      */
-    private UserStorage userStorage = new UserStorage();
+    @Autowired
+    private UserSessionStorage userSessionStorage;
 
     /**
      * DAO factory
@@ -39,8 +40,8 @@ public class FrontendService extends SubscribedService {
      *
      * @return User storage
      */
-    public UserStorage getUserStorage() {
-        return this.userStorage;
+    public UserSessionStorage getUserSessionStorage() {
+        return this.userSessionStorage;
     }
 
     /**
